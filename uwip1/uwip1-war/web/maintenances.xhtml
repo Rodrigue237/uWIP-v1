@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{boxController.showMessage}" />
+        <f:viewParam name="notify" value="#{boxController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{boxController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{boxController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion de la maintenance"/></h1>
+                <p:dataTable value="#{boxController.listBoxMaintenance}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px">
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="No"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idboxe}"/>
+                    </p:column>
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="No.SERIE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.refbox}"/>
+                    </p:column>
+                    <p:column style="width: 90px">
+                        <f:facet name="header">
+                            <h:outputText value="HARDWARE v."/>
+                        </f:facet>
+                        <h:outputText value="#{item.idhardvers.name} v#{item.idhardvers.version}"/>
+                    </p:column>
+                    <p:column style="width: 80px">
+                        <f:facet name="header">
+                            <h:outputText value="SOFTWARE v."/>
+                        </f:facet>
+                        <h:outputText value="#{item.idsoftvers.name} v#{item.idsoftvers.version}"/>
+                    </p:column>
+                    <p:column style="width: 80px">
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="KPI3"/>
+                        </f:facet>
+                        <h:outputText value="#{item.kpi3}"/>
+                    </p:column>
+
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="DERNIERE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastmaintenance}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="STATUT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.maintenancestatus}"/>
+                    </p:column>
+                    <!--Remplacement!-->
+                    <p:column style="width: 30px">
+                        <f:facet name="header">
+                            <h:outputText value="MAJ1"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_box')}.show()" actionListener="#{boxController.prepareEdit()}" render="m_box,f_m_box" image="/images/ICONS/Remplacer.png" style="width: 30px">
+                            <f:setPropertyActionListener value="#{item}" target="#{boxController.box}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                    <!--MAJ Logiciel!-->
+                    <p:column style="width: 30px">
+                        <f:facet name="header">
+                            <h:outputText value="MAJ2"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_box2')}.show()" actionListener="#{boxController.prepareEdit()}" render="m_box2,f_m_box2" image="/images/ICONS/MajMat.png" style="width: 30px">
+                            <f:setPropertyActionListener value="#{item}" target="#{boxController.box}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                    <!--Desinstallation!--> 
+                    <p:column style="width: 20px">
+                        <f:facet name="header">
+                            <h:outputText value="Off"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('ds_box')}.show()" actionListener="#{boxController.desinstalleBox()}" render="ds_box,f_ds_box" image="/images/ICONS/Desinstaller.png" style="width: 30px">
+                            <f:setPropertyActionListener value="#{item}" target="#{boxController.box}"/>
+                        </a4j:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#" />
+                <h:commandButton immediate="true"  value="Box Indisponibles" style="color:green;" action="#{boxController.boxIndispo()}" />
+
+                <!--Formulaire de remplacement Box-->
+                <rich:popupPanel show="false" id="m_box" domElementAttachment="form" autosized="true" height="100" width="300" header="REMPLACEMENT DE BOX">
+                    <h:form id="f_m_box">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Box entrante:" for="idboxe" />
+                            <h:selectOneMenu id="idboxe" value="#{boxController.idboxeIn}" title="Idboxe" >
+                                <f:selectItems value="#{boxController.listBoxLibre}" var="b" itemLabel="#{b.refbox}" itemValue="#{b.idboxe}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idboxe"/>     
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_box')}.hide()"/>
+                            <a4j:commandButton value="Remplacer" action="#{boxController.editBox2()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de mise à jours logicielle -->
+                <rich:popupPanel show="false" id="m_box2" domElementAttachment="form" autosized="true" height="100" width="300" header="MISE A JOURS LOGICIELLE">
+                    <h:form id="f_m_box2">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Version Logicielle:" for="idsoftvers" />
+                            <h:selectOneMenu id="idsoftvers" value="#{boxController.box.idsoftvers.idsoftvers}" title="Idsoftvers" >
+                                <f:selectItems value="#{boxController.listSoftvers}" var="s" itemLabel="#{s.name} v#{s.version}" itemValue="#{s.idsoftvers}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idsoftvers"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_box2')}.hide()"/>
+                            <a4j:commandButton value="Mettre à jour" action="#{boxController.editBoxMAJLogiciel()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire de desinstllation-->
+                <rich:popupPanel show="false" id="ds_box" domElementAttachment="form" autosized="true" height="100" width="300" header="DESINSTALLATION BOX">
+                    <h:form id="f_ds_box">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement déinstaller cette box" />
+                            <h:selectOneMenu id="idclient" value="#{boxController.box.idclient.idclient}" title="Client" >
+                                <f:selectItems value="#{boxController.listClient2}" var="c" itemLabel="#{c.firstname} #{c.lastname}" itemValue="#{c.idclient}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('ds_box')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{boxController.desinstalleBox()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

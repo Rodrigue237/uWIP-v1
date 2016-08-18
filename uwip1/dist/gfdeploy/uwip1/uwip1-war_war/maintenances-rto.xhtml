@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{rtoinstallationsController.showMessage}" />
+        <f:viewParam name="notify" value="#{rtoinstallationsController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{rtoinstallationsController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{rtoinstallationsController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion de la maintenance"/></h1>
+                <p:dataTable value="#{rtoinstallationsController.listValidForMaintenance}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.numinstall}">                    
+                    <p:column sortOrder="ascending" sortBy="#{item.numinstall}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="NO. INSTALLATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.numinstall}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="SYSTEME"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idproduits.designation}"/>
+                    </p:column>                   
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="STATUT DU CREDIT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.creditstatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="MOK BOX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idpaygproduct.idpaygproduct}"/>
+                    </p:column>
+                    <p:column width="222">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('e_box')}.show()" actionListener="#{rtoinstallationsController.prepareEdit()}" render="e_box,f_e_box" value="Echanger la box" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{rtoinstallationsController.credits}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('v_echange')}.show()" actionListener="#{rtoinstallationsController.prepareEdit()}" render="v_echange,f_v_echange" value="Valider l'echange" style="width: 120">
+                            <f:setPropertyActionListener value="#{item}" target="#{rtoinstallationsController.credits}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton Fermer !-->
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+                <!--Formulaire echange de box-->
+                <rich:popupPanel show="false" id="e_box" domElementAttachment="form" autosized="true" height="160" width="300" header="ECHANGE DE BOX">
+                    <h:form  id="f_e_box">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Box actuelle: #{rtoinstallationsController.credits.idpaygproduct.idpaygproduct}" for="idpaygproductout" />
+                            <h:inputHidden id="idpaygproductout" value="#{rtoinstallationsController.idPAYGprod}" title="Idpaygproductout" />
+                            <rich:message for="idpaygproductout"/>
+                            <h:outputLabel value="Nouvelle box:" for="idpaygproductin" />
+                            <h:selectOneMenu id="idpaygproductin" value="#{rtoinstallationsController.idPAYGprodNew}" title="idpaygproductin">
+                                <f:selectItems value="#{rtoinstallationsController.listNotInstallOMNIBOX}" var="p" itemLabel="#{p.idpaygproduct}" itemValue="#{p.idpaygproduct}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idpaygproductin"/>
+                            <h:outputLabel value="Nombre de jours sup(facultatif):" for="joursup" />
+                            <h:inputText id="joursup" value="#{rtoinstallationsController.nbreJourSup}" title="Joursup" />
+                            <rich:message for="joursup"/>
+                            <h:outputLabel value="Date prevue d'echange:" for="installdateprev" />
+                            <rich:calendar id="installdateprev" value="#{rtoinstallationsController.credits.installdate}" title="Installdateprev" />
+                            <rich:message for="installdateprev"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('e_box')}.hide()"/>
+                            <a4j:commandButton value="Echanger" action="#{rtoinstallationsController.echangeBoxCredit()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire valider l'echange-->
+                <rich:popupPanel show="false" id="v_echange" domElementAttachment="form" autosized="true" height="100" width="300" header="VALIDATION DE L'ECHANGE">
+                    <h:form  id="f_v_echange">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Date d'echange effectif:" for="installdate" />
+                            <rich:calendar id="installdate" value="#{rtoinstallationsController.dateValidInstall}" title="Installdate" />
+                            <rich:message for="installdate"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('v_echange')}.hide()"/>
+                            <a4j:commandButton value="Oui" action="#{rtoinstallationsController.validerEchangeBoxCredit()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{contractController.showMessage}" />
+        <f:viewParam name="notify" value="#{contractController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu> 
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{contractController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{contractController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des contrats"/></h1>
+                <p:dataTable value="#{contractController.listContract}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idcontract}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DATE SIGNATURE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.datecontra}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="MONTANT PAYE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalmoneypaid}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PRIX D'INSTALLATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalmoneydue}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="MONTANT RESTANT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.moneybalance}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{contractController.prepareCreate()}" render="c_contract,f_c_contract" immediate="true" oncomplete="#{rich:component('c_contract')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#" />
+
+                <rich:popupPanel show="false" id="c_contract" domElementAttachment="form" autosized="true" height="500" width="300" header="NOUVELLE INSTALLATION">
+                    <h:form id="f_c_contract">  
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Date signature:" for="datecontra" />
+                            <rich:calendar id="datecontra" value="#{contractController.contract.datecontra}" title="Datecontra" />
+                            <rich:message for="datecontra"/>
+                            <h:outputLabel value="Date d'installation:" for="installdate" />
+                            <rich:calendar id="installdate" value="#{contractController.contract.installdate}" title="Dateinstall" />
+                            <rich:message for="installdate"/>
+                            <h:outputLabel value="Montant payé:" for="totalmoneypaid" />
+                            <h:inputText id="totalmoneypaid" value="#{contractController.contract.totalmoneypaid}" title="Totalmoneypaid" />
+                            <rich:message for="Datecontra"/>
+                            <h:outputLabel value="Prix d'installation:" for="totalmoneydue" />
+                            <h:inputText id="totalmoneydue" value="#{contractController.contract.totalmoneydue}" title="Totalmoneydue" />
+                            <rich:message for="totalmoneydue"/>
+                            <h:outputLabel value="Balance: is auto calculed" for="moneybalance" />
+                            <h:inputHidden id="moneybalance" value="#{contractController.contract.moneybalance}" title="Moneybalance" />
+                            <rich:message for="moneybalance"/>
+                            <h:outputLabel value="Client:" for="idclient" />
+                            <h:selectOneMenu id="idclient" value="#{contractController.contract.idclient.idclient}" title="Client" >
+                                <f:selectItems value="#{contractController.listClientPotentiel}" var="c" itemLabel="#{c.firstname} #{c.lastname}" itemValue="#{c.idclient}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idclient"/>
+                            <h:outputLabel value="Utilisateur:" for="userofsystem" />
+                            <h:inputText id="userofsystem" value="#{contractController.userOfSystem}" title="Utilisateur" />
+                            <rich:message for="userofsystem"/>
+                            <h:outputLabel value="Téléphone d'utilisateur:" for="phoneofusersystem" />
+                            <h:inputText id="phoneofusersystem" value="#{contractController.phoneUserSystem}" title="Phoneofusersystem" />
+                            <rich:message for="phoneofusersystem"/>
+                            <h:outputLabel value="Numéro utilisateur:" for="numusersystem" />
+                            <h:inputText id="numusersystem" value="#{contractController.contract.numusersystem}" title="Numusersystem" />
+                            <rich:message for="numusersystem"/>
+                            <h:outputLabel value="Raccordé au réseau national?:" for="natconnect" title="Natconnect" />
+                            <rich:select id="natconnect" value="#{contractController.contract.natconnect}">
+                                <f:selectItem itemValue="No" itemLabel="Non" />
+                                <f:selectItem itemValue="Yes" itemLabel="Oui" />
+                            </rich:select>
+                            <rich:message for="natconnect"/>
+                            <h:outputLabel value="Box:" for="idboxe" />
+                            <h:selectOneMenu id="idboxe" value="#{contractController.contract.idboxe.idboxe}" title="Idboxe" >
+                                <f:selectItems value="#{contractController.listBoxLibre}" var="b" itemLabel="#{b.refbox}" itemValue="#{b.idboxe}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idboxe"/>
+                            <h:outputLabel value="Numéro d'installation:" for="numbox" />
+                            <h:inputText id="numbox" value="#{contractController.numInstall}" title="Numbox" />
+                            <rich:message for="numbox"/>
+                            <h:outputLabel value="Type d'installation:" for="typeinstall" title="Typeinstall" />
+                            <rich:select id="typeinstall" value="#{contractController.contract.typeinstall}">
+                                <f:selectItem itemValue="Domestic" itemLabel="Domestique" />
+                                <f:selectItem itemValue="Professional" itemLabel="Professionnelle" />
+                            </rich:select>
+                            <rich:message for="typeinstall"/>
+                            <h:outputLabel value="Latitude:" for="latitude" />
+                            <h:inputText id="latitude" value="#{contractController.latitudeinstal}" title="Latitude" />
+                            <rich:message for="latitude"/>
+                            <h:outputLabel value="Longitude:" for="longitude" />
+                            <h:inputText id="longitude" value="#{contractController.longitudeinstal}" title="Longitude" />
+                            <rich:message for="longitude"/>
+                            <h:outputLabel value="Village:" for="village" />
+                            <h:inputText id="village" value="#{contractController.contract.village}" title="Village" />
+                            <rich:message for="village"/>
+                            <h:outputLabel value="Municipalité:" for="municipality" />
+                            <h:inputText id="municipality" value="#{contractController.contract.municipality}" title="Municipality" />
+                            <rich:message for="municipality"/>
+                            <h:outputLabel value="Prochaine transaction:" for="estimnexttransact" />
+                            <rich:calendar id="estimnexttransact" value="#{contractController.contract.estimnexttransact}" title="Estimnexttransact" />
+                            <rich:message for="estimnexttransact"/>
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_contract')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{contractController.saveContract()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

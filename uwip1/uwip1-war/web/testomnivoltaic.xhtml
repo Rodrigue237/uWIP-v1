@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{codeController.showMessage}" />
+        <f:viewParam name="notify" value="#{codeController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="9000" showCloseButton ="true" rendered="#{ortherController.showMessagePOP}">
+                <f:facet name="detail">
+                    <h:outputText value="#{ortherController.messagePOP}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="TEST-OMNIVOLTAIC"/></h1>
+
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{ortherController.prepareCreateHTop()}" render="c_code,f_c_code" immediate="true" oncomplete="#{rich:component('c_code')}.show()" value="Test OTP-HASH64"/>
+                <a4j:commandButton actionListener="#{ortherController.prepareCreateDecimal()}" render="c_decimal,f_c_decimal" immediate="true" oncomplete="#{rich:component('c_decimal')}.show()" value="Test DECIMAL-Convert"/>
+                <a4j:commandButton actionListener="#{ortherController.prepareCreateCodeOmni()}" render="c_codesdec,f_c_codesdec" immediate="true" oncomplete="#{rich:component('c_codesdec')}.show()" value="Test INITIALISATION"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+                <!--Formulaire Test OTP-HASH64-->
+                <rich:popupPanel show="false" id="c_code" domElementAttachment="form" autosized="true" height="300" width="300" header="GENERATION de H_Top">
+                    <h:form id="f_c_code">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="H_K or H_Root:" for="hroot" />
+                            <h:inputText id="hroot" value="#{ortherController.h_RootForm}" title="Hroot" />
+                            <rich:message for="hroot"/>
+                            <h:outputLabel value="K Input:" for="kform" />
+                            <h:inputText id="kform" value="#{ortherController.k_forms}" title="Kform" />
+                            <rich:message for="kform"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_code')}.hide()"/>
+                            <a4j:commandButton value="Générer" action="#{ortherController.generateHTop()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire Test DECIMAL Convert-->
+                <rich:popupPanel show="false" id="c_decimal" domElementAttachment="form" autosized="true" height="150" width="300" header="DECIMAL Convert">
+                    <h:form id="f_c_decimal">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="HEXA To Convert:" for="hexaform" />
+                            <h:inputText id="hexaform" value="#{ortherController.hexToDec_forms}" title="Hexaform" />
+                            <rich:message for="hexaform"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_decimal')}.hide()"/>
+                            <a4j:commandButton value="Générer" action="#{ortherController.generateDecimal()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire Test INITIALISATION-->
+                <rich:popupPanel show="false" id="c_codesdec" domElementAttachment="form" autosized="true" height="400" width="300" header="GENERATION de Codes">
+                    <h:form id="f_c_codesdec">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="H_K or H_Root:" for="hroot" />
+                            <h:inputText id="hroot" value="#{ortherController.h_RootForm}" title="Hroot" />
+                            <rich:message for="hroot"/>
+                            <h:outputLabel value="Nombre de jour(HCJ):" for="hcjform" />
+                            <h:inputText id="hcjform" value="#{ortherController.hcj_forms}" title="Hcjform" />
+                            <rich:message for="hcjform"/>
+                            <h:outputLabel value="Prod Current HashIndex(C):" for="currentindex" />
+                            <h:inputText id="currentindex" value="#{ortherController.c_currentIndexForm}" title="Currentindex" />
+                            <rich:message for="currentindex"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_codesdec')}.hide()"/>
+                            <a4j:commandButton value="Générer" action="#{ortherController.generateCodeOMNI()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

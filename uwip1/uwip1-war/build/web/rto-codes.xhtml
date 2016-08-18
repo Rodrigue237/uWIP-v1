@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{rtoinstallationsController.showMessage}" />
+        <f:viewParam name="notify" value="#{rtoinstallationsController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{rtoinstallationsController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{rtoinstallationsController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des transactions"/></h1>
+                <p:dataTable value="#{rtoinstallationsController.listPaygcodes}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.numinstall}">                    
+                    <p:column sortOrder="ascending" sortBy="#{item.numinstall}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="NO. INSTALLATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.numinstall}"/>
+                    </p:column>                    
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.generatedcode}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DATE DE GENERATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.generateddate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="EXPIRATION DU CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.enddate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton Fermer et Ajouter !-->
+                <a4j:commandButton actionListener="#{rtoinstallationsController.prepareCreateManualCode()}" render="c_code,f_c_code" immediate="true" oncomplete="#{rich:component('c_code')}.show()" value="Nouvelle transaction"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+                <!--Formulaire de transaction manuelle-->
+                <rich:popupPanel show="false" id="c_code" domElementAttachment="form" autosized="true" height="200" width="300" header="NOUVELLE TRANSACTION">
+                    <h:form  id="f_c_code">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Numéro d'installation:" for="numinstall" />
+                            <h:selectOneMenu id="numinstall" value="#{rtoinstallationsController.numInstallIN}" title="Numinstall">
+                                <f:selectItems value="#{rtoinstallationsController.listInstalledCredits}" var="n" itemLabel="#{n.numinstall}" itemValue="#{n.numinstall}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="numinstall"/>
+                            <h:outputLabel value="Montant:" for="price" />
+                            <h:inputText id="price" value="#{rtoinstallationsController.prixUnite}" title="Price" />
+                            <rich:message for="price"/>
+                            <h:outputLabel value="ID Transaction:" for="idtransact" />
+                            <h:inputText id="idtransact" value="#{rtoinstallationsController.idTransactIN}" title="Idtransact" />
+                            <rich:message for="idtransact"/>
+                            <h:outputLabel value="No. Telephone:" for="numphone" />
+                            <h:inputText id="numphone" value="#{rtoinstallationsController.numPhone}" title="Numphone" />
+                            <rich:message for="numphone"/>
+                            <h:outputLabel value="Date de la transaction:" for="datetransact" />
+                            <rich:calendar id="datetransact" value="#{rtoinstallationsController.dateTransact}" title="Datetransact" />
+                            <rich:message for="datetransact"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_code')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{rtoinstallationsController.saveManualTransactionLuciole()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

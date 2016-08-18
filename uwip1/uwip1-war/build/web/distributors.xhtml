@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{distributorController.showMessage}" />
+        <f:viewParam name="notify" value="#{distributorController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="#{lm.Outils}">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="#{lm.Navigation}">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{distributorController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{distributorController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="#{lm.GestionDistributor}"/></h1>
+                <p:dataTable value="#{distributorController.listDistributor}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="6" style="margin-bottom:20px">
+                    <p:column sortOrder="ascending" sortBy="#{item.iddistributore}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="No"/>
+                        </f:facet>
+                        <h:outputText value="#{item.iddistributor}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NOMS ET PRENOMS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.firstname} #{item.lastname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="REF-DISTRIBUTEUR"/>
+                        </f:facet>
+                        <h:outputText value="#{item.distribuniqnumber}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL CODE VENDU"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalcodesolde}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL TEMPS VENDU"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totaltimesolde}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DERN.TRANSACT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lasttransact}"/>
+                    </p:column>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_distributor')}.show()" actionListener="#{distributorController.prepareEdit()}" render="m_distributor,f_m_distributor" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{distributorController.distributor}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_distributor')}.show()" actionListener="#{distributorController.deleteDistributor()}" render="s_distributor,f_s_distributor" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{distributorController.distributor}"/>
+                        </a4j:commandButton>
+                    </p:column>                        
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{distributorController.prepareCreate()}" render="c_distributor,f_c_distributor" immediate="true" oncomplete="#{rich:component('c_distributor')}.show()" value="#{lm.Ajouter}"/>
+                <h:commandButton immediate="true"  value="#{lm.Fermer}" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="#{lm.ImprimTout}" style="color:green;" action="#{distributorController.imprimer()}" />
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_distributor" domElementAttachment="form" autosized="true" height="260" width="300" header="NOUVEAU DISTRIBUTEUR">
+                    <h:form id="f_c_distributor">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Prénom:" for="firstname" />
+                            <h:inputText id="firstname" value="#{distributorController.distributor.firstname}" title="Firstname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Nom:" for="lastname" />
+                            <h:inputText id="lastname" value="#{distributorController.distributor.lastname}" title="Lastname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Numéro unique:" for="distribuniqnumber" />
+                            <h:inputText id="distribuniqnumber" value="#{distributorController.distributor.distribuniqnumber}" title="Distribuniqnumber" />
+                            <rich:message for="distribuniqnumber"/>
+                            <h:outputLabel value="Latitude:" for="latitude" />
+                            <h:inputText id="latitude" value="#{distributorController.distributor.latitude}" title="Latitude" />
+                            <rich:message for="latitude"/>
+                            <h:outputLabel value="Longitude:" for="longitude" />
+                            <h:inputText id="longitude" value="#{distributorController.distributor.longitude}" title="Longitude" />
+                            <rich:message for="longitude"/>
+                            <h:outputLabel value="Dernière transaction:" for="lasttransact" />
+                            <rich:calendar id="lasttransact" value="#{distributorController.distributor.lasttransact}" title="Lasttransact" />
+                            <rich:message for="lasttransact"/>
+                            <h:outputLabel value="Organisation:" for="idorganization" />
+                            <h:selectOneMenu id="idorganization" value="#{distributorController.distributor.idorganization.idorganization}" title="Organization" >
+                                <f:selectItems value="#{distributorController.listOrganization}" var="o" itemLabel="#{o.name}" itemValue="#{o.idorganization}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idorganization"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_distributor')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{distributorController.saveDistributor()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_distributor" domElementAttachment="form" autosized="true" height="260" width="300" header="MODIFICATION DISTRIBUTEUR">
+                    <h:form id="f_m_distributor">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Prénom:" for="firstname" />
+                            <h:inputText id="firstname" value="#{distributorController.distributor.firstname}" title="Firstname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Nom:" for="lastname" />
+                            <h:inputText id="lastname" value="#{distributorController.distributor.lastname}" title="Lastname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Numéro unique:" for="distribuniqnumber" />
+                            <h:inputText id="distribuniqnumber" value="#{distributorController.distributor.distribuniqnumber}" title="Distribuniqnumber" />
+                            <rich:message for="distribuniqnumber"/>
+                            <h:outputLabel value="Dernière transaction:" for="lasttransact" />
+                            <rich:calendar id="lasttransact" value="#{distributorController.distributor.lasttransact}" title="Lasttransact" />
+                            <rich:message for="lasttransact"/>
+                            <h:outputLabel value="Organisation:" for="idorganization" />
+                            <h:selectOneMenu id="idorganization" value="#{distributorController.distributor.idorganization.idorganization}" title="Organization" >
+                                <f:selectItems value="#{distributorController.listOrganization}" var="o" itemLabel="#{o.name}" itemValue="#{o.idorganization}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idorganization"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_distributor')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{distributorController.editDistributor()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_distributor" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION DISTRIBUTEUR">
+                    <h:form id="f_s_distributor">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_distributor')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{distributorController.deleteDistributor()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+
+            <!--Carte des distributeurs-->
+            <div id="map3">
+
+            </div>
+
+            <script type="text/javascript">
+                var distributorMarq = L.icon({
+                    iconUrl: './resources/leaflet-0.7.3/images/marker-distributor.png',
+                    shadowUrl: './resources/leaflet-0.7.3/images/marker-shadow.png',
+                    shadowAnchor: [1, 0],  // the same for the shadow
+                    popupAnchor:  [12, 8] // point from which the popup should open relative to the iconAnchor
+                });
+                var clientMarq = L.icon({
+                    iconUrl: './resources/leaflet-0.7.3/images/marker-client.png',
+                    shadowUrl: './resources/leaflet-0.7.3/images/marker-shadow.png',
+                    shadowAnchor: [1, 0],  // the same for the shadow
+                    popupAnchor:  [12, 8] // point from which the popup should open relative to the iconAnchor
+                });
+                var powerMarq = L.icon({
+                    iconUrl: './resources/leaflet-0.7.3/images/marker-powa.png',
+                    shadowUrl: './resources/leaflet-0.7.3/images/marker-shadow.png',
+                    shadowAnchor: [-20, -15],  // the same for the shadow
+                    popupAnchor:  [30, 20] // point from which the popup should open relative to the iconAnchor
+                });
+                var map = L.map('map3').setView([5.596, 10.589], 9);
+                function onMapClick(e) {
+                    popup
+                    .setLatLng(e.latlng)
+                    .setContent("Coordonnee " + e.latlng.toString())
+                    .openOn(map);
+                }
+                var popup = L.popup();
+
+                map.on('click', onMapClick);
+                //Initialisation de la carte 
+                L.tileLayer('http://{s}.tiles.mapbox.com/v3/phil6611.ikebkh58/{z}/{x}/{y}.png', {
+                    attribution: 'mOk Tracer &copy; <a href="http://www.upowa.org">upOwa</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                    maxZoom: 22,
+                    id: 'seanjackson.mmd1he25',
+                    accessToken: 'pk.eyJ1Ijoic2VhbmphY2tzb24iLCJhIjoiMjNmMWYxN2VhZjQwZGI3MTcxZTI3MzMwNmRkYWIwZjkifQ.PoJZkF8NodGJv13UoG5_Cg#16'
+                }).addTo(map);
+                
+                
+            </script>
+
+            <!--Creation des marqueurs distributor-->
+            <script>
+                var markerupowa = L.marker([5.46698, 10.42191], {icon: powerMarq}).addTo(map);
+                markerupowa.bindPopup("QG d'upOwa.").openPopup();
+            </script>
+            <c:forEach var="item" items="${distributorController.listDistributorMapped}" varStatus="status">
+                <script>
+                    var marker${item.iddistributor} = L.marker([${item.latitude}, ${item.longitude}], {icon: distributorMarq}).addTo(map);
+                    marker${item.iddistributor}.bindPopup("No: ${item.distribuniqnumber}, Name:${item.lastname} ${item.firstname}.").openPopup();
+                </script>
+            </c:forEach>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

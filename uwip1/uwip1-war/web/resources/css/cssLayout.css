@@ -1,0 +1,97 @@
+
+#top {
+    position: relative;
+    background-color:#ED8D14;
+    color: white;
+    padding: 5px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 10px 10px 0px 0px;
+}
+
+#bottom {
+    position: relative;
+    background-color:#ED8D14;
+    padding: 5px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 0px 0px 10px 10px;
+}
+
+#left {
+    background-color: #ece3a5;
+    width: 12%;
+    height: 600px;
+    padding: 5px;
+    float: left;
+}
+
+#right {
+    background-color: #ece3a5;
+    width: 13%;
+    height: 600px;
+    padding: 5px;
+}
+
+.center_content {
+    position: relative;
+    background-color: #dddddd;
+    padding: 5px;
+    height: 600px;
+}
+
+.left_content {
+    background-color: #dddddd;
+    padding: 5px;
+    margin-left: 170px;
+    height: 600px;
+}
+
+.right_content {
+    background-color: #dddddd;
+    padding: 5px;
+    margin: 0px 170px 0px 170px;
+    height: 600px;
+}
+
+#top a:link, #top a:visited {
+  color: white;
+  font-weight : bold;
+  text-decoration: none;
+}
+
+#top a:link:hover, #top a:visited:hover  {
+  color: black;
+  font-weight : bold;
+  text-decoration : underline;
+}
+
+
+#map { 
+    height: 570px;
+}
+
+#map2 { 
+    height: 300px;
+}
+
+#map3 { 
+    height: 300px;
+}
+
+#mapbox { 
+    height: 250px;
+}
+
+.pic {
+        margin-bottom: -4px;
+        margin-right: 2px;
+        }
+ 
+        .search .rf-ddm-itm-sel {
+        background-color: transparent;
+        background-image:none;
+        border-color: transparent;
+        cursor: default;
+        }
+
+
+    

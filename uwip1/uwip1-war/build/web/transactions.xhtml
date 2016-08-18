@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{rtoinstallationsController.showMessage}" />
+        <f:viewParam name="notify" value="#{rtoinstallationsController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{ortherController.showMessagePOP}">
+                <f:facet name="detail">
+                    <h:outputText value="#{ortherController.messagePOP}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Transactions"/></h1>
+                <p:dataTable value="#{ortherController.listMmtransaction}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="18" style="margin-bottom:20px" selectionMode="single" rowKey="#{item.idmmtransaction}">                    
+                    <p:column sortOrder="ascending" sortBy="#{item.idmmtransaction}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="No."/>
+                        </f:facet>
+                        <h:outputText value="#{item.idmmtransaction}"/>
+                    </p:column>                    
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ID TRANSACTION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idtransact}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DATE DE TRANSACTION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.datetrans}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="No D'INSTALLATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.numbox}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="MONTANT TRANSACTION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.prixunite}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NUMERO TELEPHONE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.numphone}"/>
+                    </p:column>
+                    
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton Fermer et Ajouter !-->                
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />               
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

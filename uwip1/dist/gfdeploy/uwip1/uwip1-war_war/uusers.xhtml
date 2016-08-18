@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{uuserController.showMessage}" />
+        <f:viewParam name="notify" value="#{uuserController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{uuserController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{uuserController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="#{lm.GestionUtilisateur} (Super Root)"/></h1>
+                <p:dataTable value="#{uuserController.listUuser}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px; width:1150px">
+                    <p:column sortOrder="ascending" sortBy="#{item.iduuser}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.iduuser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PRENOM"/>
+                        </f:facet>
+                        <h:outputText value="#{item.firstname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NOM"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NAISSANCE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.birth}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="LOGIN"/>
+                        </f:facet>
+                        <h:outputText value="#{item.login}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="MOTS DE PASSE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.mdp}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PROFIL"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idprofile.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ORGANISATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idorganization.name}"/>
+                    </p:column>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_uuser')}.show()" actionListener="#{uuserController.prepareEdit()}" render="m_uuser,f_m_uuser" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{uuserController.uuser}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_uuser')}.show()" actionListener="#{uuserController.deleteUuser()}" render="s_uuser,f_s_uuser" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{uuserController.uuser}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{uuserController.prepareCreate()}" render="c_uuser,f_c_uuser" immediate="true" oncomplete="#{rich:component('c_uuser')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#{uuserController.imprimer()}" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_uuser" domElementAttachment="form" autosized="true" height="245" width="320" header="NOUVEAU USER">
+                    <h:form id="f_c_uuser">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Prenoms:" for="firstname" />
+                            <h:inputText id="firstname" value="#{uuserController.uuser.firstname}" title="Firstname" />
+                            <rich:message for="firstname"/>
+                            <h:outputLabel value="Noms:" for="lastname" />
+                            <h:inputText id="lastname" value="#{uuserController.uuser.lastname}" title="Lastname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Naissance:" for="birth" />
+                            <rich:calendar id="birth" value="#{uuserController.uuser.birth}" title="Birth" />
+                            <rich:message for="birth"/>
+                            <h:outputLabel value="Login:" for="login" />
+                            <h:inputText id="login" value="#{uuserController.uuser.login}" title="Login" />
+                            <rich:message for="login"/>
+                            <h:outputLabel value="Mots de passe:" for="mdp" />
+                            <h:inputText id="mdp" value="#{uuserController.uuser.mdp}" title="Mdp" />
+                            <rich:message for="mdp"/>
+                            <h:outputLabel value="Profile:" for="idprofile" />
+                            <h:selectOneMenu id="idprofile" value="#{uuserController.uuser.idprofile.idprofile}" title="Profile" >
+                                <f:selectItems value="#{uuserController.listProfile}" var="p" itemLabel="#{p.name}" itemValue="#{p.idprofile}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idprofile"/>
+                            <h:outputLabel value="Organisation:" for="idorganization" />
+                            <h:selectOneMenu id="idorganization" value="#{uuserController.uuser.idorganization.idorganization}" title="Organization" >
+                                <f:selectItems value="#{uuserController.listOrganization}" var="o" itemLabel="#{o.name}" itemValue="#{o.idorganization}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idorganization"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_uuser')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{uuserController.saveUuser()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>    
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_uuser" domElementAttachment="form" autosized="true" height="245" width="320" header="MODIFICATION USER">
+                    <h:form id="f_m_uuser">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Prenoms:" for="firstname" />
+                            <h:inputText id="firstname" value="#{uuserController.uuser.firstname}" title="Firstname" />
+                            <rich:message for="firstname"/>
+                            <h:outputLabel value="Noms:" for="lastname" />
+                            <h:inputText id="lastname" value="#{uuserController.uuser.lastname}" title="Lastname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Naissance:" for="birth" />
+                            <rich:calendar id="birth" value="#{uuserController.uuser.birth}" title="Birth" />
+                            <rich:message for="birth"/>
+                            <h:outputLabel value="Login:" for="login" />
+                            <h:inputText id="login" value="#{uuserController.uuser.login}" title="Login" />
+                            <rich:message for="login"/>
+                            <h:outputLabel value="Profile:" for="idprofile" />
+                            <h:selectOneMenu id="idprofile" value="#{uuserController.uuser.idprofile.idprofile}" title="Profile" >
+                                <f:selectItems value="#{uuserController.listProfile}" var="p" itemLabel="#{p.name}" itemValue="#{p.idprofile}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idprofile"/>
+                            <h:outputLabel value="Organisation:" for="idorganization" />
+                            <h:selectOneMenu id="idorganization" value="#{uuserController.uuser.idorganization.idorganization}" title="Organization" >
+                                <f:selectItems value="#{uuserController.listOrganization}" var="o" itemLabel="#{o.name}" itemValue="#{o.idorganization}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idorganization"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_uuser')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{uuserController.editUuser()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>    
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_uuser" domElementAttachment="form" autosized="true" height="90" width="300" header="SUPPRESSION USER">
+                    <h:form id="f_s_uuser">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                            <!--<h:inputHidden id="onlineprofil" value="#{sessionController.connectedUser.firstname}" title="Onlineprofil" />-->
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_uuser')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{uuserController.deleteUuser()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

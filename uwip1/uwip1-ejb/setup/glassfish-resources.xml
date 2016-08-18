@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_uwip8_db_postgresPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
+        <property name="serverName" value="localhost"/>
+        <property name="portNumber" value="5432"/>
+        <property name="databaseName" value="uwip8_db"/>
+        <property name="User" value="postgres"/>
+        <property name="Password" value="mirabelle"/>
+        <property name="URL" value="jdbc:postgresql://localhost:5432/uwip8_db"/>
+        <property name="driverClass" value="org.postgresql.Driver"/>
+        <property name="connectTimeout" value="300000"/>
+        <property name="socketTimeout" value="1200000"/>
+        <property name="autoReconnect" value="true"/>
+    </jdbc-connection-pool>
+    <jdbc-resource enabled="true" jndi-name="jdbc/localuwip3" object-type="user" pool-name="post-gre-sql_uwip8_db_postgresPool"/>
+    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_uwip6_db_postgresPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
+        <property name="serverName" value="myamazonpostgres.cm1svpr6iecs.us-west-2.rds.amazonaws.com"/>
+        <property name="portNumber" value="5432"/>
+        <property name="databaseName" value="uwip6_db"/>
+        <property name="User" value="postgres"/>
+        <property name="Password" value="mirabelle"/>
+        <property name="URL" value="jdbc:postgresql://myamazonpostgres.cm1svpr6iecs.us-west-2.rds.amazonaws.com:5432/uwip6_db"/>
+        <property name="driverClass" value="org.postgresql.Driver"/>
+        <property name="connectTimeout" value="300000"/>
+        <property name="socketTimeout" value="1200000"/>
+        <property name="autoReconnect" value="true"/>
+    </jdbc-connection-pool>
+    <jdbc-resource enabled="true" jndi-name="jdbc/onlineuwip6" object-type="user" pool-name="post-gre-sql_uwip6_db_postgresPool"/>
+    <jdbc-connection-pool allow-non-component-callers="false" associate-with-thread="false" connection-creation-retry-attempts="0" connection-creation-retry-interval-in-seconds="10" connection-leak-reclaim="false" connection-leak-timeout-in-seconds="0" connection-validation-method="auto-commit" datasource-classname="org.postgresql.ds.PGSimpleDataSource" fail-all-connections="false" idle-timeout-in-seconds="300" is-connection-validation-required="false" is-isolation-level-guaranteed="true" lazy-connection-association="false" lazy-connection-enlistment="false" match-connections="false" max-connection-usage-count="0" max-pool-size="32" max-wait-time-in-millis="60000" name="post-gre-sql_uwip1_db_postgresPool" non-transactional-connections="false" pool-resize-quantity="2" res-type="javax.sql.DataSource" statement-timeout-in-seconds="-1" steady-pool-size="8" validate-atmost-once-period-in-seconds="0" wrap-jdbc-objects="false">
+        <property name="serverName" value="myamazonpostgres.cm1svpr6iecs.us-west-2.rds.amazonaws.com"/>
+        <property name="portNumber" value="5432"/>
+        <property name="databaseName" value="uwip1_db"/>
+        <property name="User" value="postgres"/>
+        <property name="Password" value="mirabelle"/>
+        <property name="URL" value="jdbc:postgresql://myamazonpostgres.cm1svpr6iecs.us-west-2.rds.amazonaws.com:5432/uwip1_db"/>
+        <property name="driverClass" value="org.postgresql.Driver"/>
+    </jdbc-connection-pool>
+    <jdbc-resource enabled="true" jndi-name="jdbc/onlineuwip1" object-type="user" pool-name="post-gre-sql_uwip1_db_postgresPool"/>
+</resources>

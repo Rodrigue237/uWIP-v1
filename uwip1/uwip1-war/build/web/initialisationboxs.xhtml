@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{codeController.showMessage}" />
+        <f:viewParam name="notify" value="#{codeController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="9000" showCloseButton ="true" rendered="#{ortherController.showMessagePOP}">
+                <f:facet name="detail">
+                    <h:outputText value="#{ortherController.messagePOP}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="INITIALISATION BOX"/></h1>
+                <p:dataTable value="#{rtoinstallationsController.listNotInitialiseOMNIBOX}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.idpaygproduct}">
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ID PAYG PROD"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idpaygproduct}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="H-ROOT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.paygsechashroot}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="H-TOP"/>
+                        </f:facet>
+                        <h:outputText value="#{item.paygsechashtop}"/>
+                    </p:column>                      
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CDT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.otpcount}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CURRENT H-INDEX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.currenthashindex}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="HASHCHAIN-LENGTH"/>
+                        </f:facet>
+                        <h:outputText value="#{item.hashchainlength}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="MAX-HCJ"/>
+                        </f:facet>
+                        <h:outputText value="#{item.maxhcj}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="LIFECYCLE-STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.payglifecyclestatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="BOX-STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.boxstatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DATE INITIALISATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dateinitialisation}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="INITIALISATION STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.initialisationstatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="FIRST INIT CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.firstcode}"/>
+                    </p:column>
+                    <p:column width="150">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('v_init')}.show()" actionListener="#{rtoinstallationsController.prepareEdit()}" render="v_init,f_v_init" value="Valider l'initialisation" style="width: 145px">
+                            <f:setPropertyActionListener value="#{item}" target="#{rtoinstallationsController.paygotpgenerator}"/>
+                        </a4j:commandButton>                     
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{rtoinstallationsController.prepareCreateManualCode()}" render="c_codesinit,f_c_codesinit" immediate="true" oncomplete="#{rich:component('c_codesinit')}.show()" value="INITIALISER UNE BOX"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+                <!--Formulaire INITIALISATION-->
+                <rich:popupPanel show="false" id="c_codesinit" domElementAttachment="form" autosized="true" height="120" width="300" header="INITIALISATION DE LA BOX">
+                    <h:form id="f_c_codesinit">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Id PAYG Prod.:" for="idpaygprod" />
+                            <h:inputText id="idpaygprod" value="#{rtoinstallationsController.idPAYGprod}" title="Idpaygprod" />
+                            <rich:message for="idpaygprod"/>
+                            <h:outputLabel value="Nombre de jour(HCJ):" for="hcjform" />
+                            <h:inputText id="hcjform" value="#{rtoinstallationsController.hcj_forms}" title="Hcjform" />
+                            <rich:message for="hcjform"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_codesinit')}.hide()"/>
+                            <a4j:commandButton value="Générer" action="#{rtoinstallationsController.creation1erCodeInitialiseBox()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire Valider l'initialisation-->
+                <rich:popupPanel show="false" id="v_init" domElementAttachment="form" autosized="true" height="120" width="300" header="VALIDATION DE L'INITIALISATION">
+                    <h:form id="f_v_init">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="..." for="idpaygprod" />
+                            <h:inputHidden id="idpaygprod" value="#{rtoinstallationsController.paygotpgenerator.idpaygproduct}" title="Idpaygprod" />
+                            <rich:message for="idpaygprod"/>
+                            <h:outputLabel value="Date d'initialisation:" for="initdate" />
+                            <rich:calendar id="initdate" value="#{rtoinstallationsController.paygotpgenerator.dateinitialisation}" title="Initdate" />
+                            <rich:message for="initdate"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('v_init')}.hide()"/>
+                            <a4j:commandButton value="Validez" action="#{rtoinstallationsController.valider1erCodeInitialiseBox()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

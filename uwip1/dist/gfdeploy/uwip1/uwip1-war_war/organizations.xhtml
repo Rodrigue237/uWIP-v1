@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{organizationController.showMessage}" />
+        <f:viewParam name="notify" value="#{organizationController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{organizationController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{organizationController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des organisations"/></h1>
+                <p:dataTable value="#{organizationController.listOrganization}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px">
+                    <p:column sortOrder="ascending" sortBy="#{item.idorganization}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idorganization}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NOM"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ACTIVITE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.activity}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CAPITAL(euro)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.capital}"/>
+                    </p:column>
+                    <p:column style="width: 100px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_organization')}.show()" actionListener="#{organizationController.prepareEdit()}" render="m_organization,f_m_organization" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{organizationController.organization}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_organization')}.show()" actionListener="#{organizationController.deleteOrganization()}" render="s_organization,f_s_organization" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{organizationController.organization}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{organizationController.prepareCreate()}" render="c_organization,f_c_organization" immediate="true" oncomplete="#{rich:component('c_organization')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#{organizationController.imprimer()}" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_organization" domElementAttachment="form" autosized="true" height="150" width="300" header="NOUVELLE ORGANISATION">
+                    <h:form id="f_c_organization">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Nom:" for="name" />
+                            <h:inputText id="name" value="#{organizationController.organization.name}" title="Name" />
+                            <rich:message for="name"/>
+                            <h:outputLabel value="Activité:" for="activity" />
+                            <h:inputText id="activity" value="#{organizationController.organization.activity}" title="Activity" />
+                            <rich:message for="activity"/>
+                            <h:outputLabel value="Capital:" for="capital" />
+                            <h:inputText id="capital" value="#{organizationController.organization.capital}" title="Capital" />
+                            <rich:message for="capital"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_organization')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{organizationController.saveOrganization()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_organization" domElementAttachment="form" autosized="true" height="150" width="300" header="MODIFICATION ORGANISATION">
+                    <h:form id="f_m_organization">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Nom:" for="name" />
+                            <h:inputText id="name" value="#{organizationController.organization.name}" title="Name" />
+                            <rich:message for="name"/>
+                            <h:outputLabel value="Activité:" for="activity" />
+                            <h:inputText id="activity" value="#{organizationController.organization.activity}" title="Activity" />
+                            <rich:message for="activity"/>
+                            <h:outputLabel value="Capital:" for="capital" />
+                            <h:inputText id="capital" value="#{organizationController.organization.capital}" title="Capital" />
+                            <rich:message for="capital"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_organization')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{organizationController.editOrganization()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_organization" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION ORGANISATION">
+                    <h:form id="f_s_organization">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_organization')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{organizationController.deleteOrganization()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

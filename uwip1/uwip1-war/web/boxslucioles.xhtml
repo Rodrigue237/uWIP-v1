@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{codeController.showMessage}" />
+        <f:viewParam name="notify" value="#{codeController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="9000" showCloseButton ="true" rendered="#{ortherController.showMessagePOP}">
+                <f:facet name="detail">
+                    <h:outputText value="#{ortherController.messagePOP}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des Boxs: Boxs Lucioles"/></h1>
+                <p:dataTable value="#{rtoinstallationsController.listAllBoxsLucioles}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.idpaygproduct}">
+                    <p:column sortOrder="ascending" sortBy="#{item.idpaygproduct}" width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ID PAYG PROD"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idpaygproduct}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="H-ROOT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.paygsechashroot}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="H-TOP"/>
+                        </f:facet>
+                        <h:outputText value="#{item.paygsechashtop}"/>
+                    </p:column>                      
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CDT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.otpcount}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CURRENT H-INDEX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.currenthashindex}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="HASHCHAIN-LENGTH"/>
+                        </f:facet>
+                        <h:outputText value="#{item.hashchainlength}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="MAX-HCJ"/>
+                        </f:facet>
+                        <h:outputText value="#{item.maxhcj}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="LIFECYCLE-STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.payglifecyclestatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="BOX-STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.boxstatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DATE INITIALISATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dateinitialisation}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="INITIALISATION STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.initialisationstatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="FIRST INIT CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.firstcode}"/>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <h:commandButton immediate="true"  value="Voir les boxs V1/V2" style="color:green;" action="#{boxController.box()}" />
+                <h:commandButton immediate="true"  value="#{lm.Fermer}" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

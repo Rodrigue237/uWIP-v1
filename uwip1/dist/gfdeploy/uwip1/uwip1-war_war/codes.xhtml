@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{codeController.showMessage}" />
+        <f:viewParam name="notify" value="#{codeController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{codeController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{codeController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="#{lm.GestionCode}"/></h1>
+                <p:dataTable value="#{codeController.listCode}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px">
+                    <p:column sortOrder="ascending" sortBy="#{item.idcode}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="No"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idcode}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.codevalue}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CLE UTILISEE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.genekeyused}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DATE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.timegene}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DUREE CODE(jr)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.timevalue}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PRIX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.price}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ORGANISATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idorganization.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DISTRIBUTEUR"/>
+                        </f:facet>
+                        <h:outputText value="#{item.iddistributor.firstname}#{item.iddistributor.lastname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="BOX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idboxe.refbox}"/>
+                    </p:column>
+                    <p:column style="width: 100px">
+                        <f:facet name="header">
+                            <h:outputText value="Suppression"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('s_code')}.show()" actionListener="#{codeController.deleteCode()}" render="s_code,f_s_code" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{codeController.code}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{codeController.prepareCreate()}" render="c_code,f_c_code" immediate="true" oncomplete="#{rich:component('c_code')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#{codeController.imprimer()}" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_code" domElementAttachment="form" autosized="true" height="115" width="300" header="NOUVEAU CODE">
+                    <h:form id="f_c_code">
+                        <h:panelGrid columns="3" id="c_data">
+                           <h:outputLabel value="Box:" for="idboxe" />
+                           <h:selectOneMenu id="idboxe" value="#{codeController.numBoxCode}" title="Idboxe" >
+                               <f:selectItems value="#{codeController.listBoxInstalled}" var="b" itemLabel="#{b.refbox}" itemValue="#{b.numbox}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idboxe"/>
+                            <h:outputLabel value="Nombre de jours:" for="nbrejours" />
+                            <h:inputText id="nbrejours" value="#{codeController.nbreJours}" title="Nbrejours" />
+                            <rich:message for="nbrejours"/> 
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_code')}.hide()"/>
+                            <a4j:commandButton value="Générer" action="#{codeController.saveCodeAutomatic()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

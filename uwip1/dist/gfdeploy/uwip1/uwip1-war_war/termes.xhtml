@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{termesController.showMessage}" />
+        <f:viewParam name="notify" value="#{termesController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{termesController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{termesController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des termess"/></h1>
+                <p:dataTable value="#{termesController.listTermes}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.idtermes}">
+                    <p:column width="40" sortOrder="ascending" sortBy="#{item.idtermes}">
+                        <f:facet name="header">
+                            <h:outputText value="No."/>
+                        </f:facet>
+                        <h:outputText value="#{item.idtermes}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="NOM CREDIT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nomcredit}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DUREE DU CREDIT (MOIS)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dureecredit}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ACOMPTE (%)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.acompte}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="NBRE MENSUALITE (MOIS)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nbremensualite}"/>
+                    </p:column>
+                    <p:column width="215">
+                        <f:facet name="header">
+                            <h:outputText value="NBRE JOURS DE GRACE (JR)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nbrejourgrace}"/>
+                    </p:column>
+                    <p:column style="width: 210px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_termes')}.show()" actionListener="#{termesController.prepareEdit()}" render="m_termes,f_m_termes" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{termesController.termes}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_termes')}.show()" actionListener="#{termesController.deleteTermes()}" render="s_termes,f_s_termes" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{termesController.termes}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{termesController.prepareCreate()}" render="c_termes,f_c_termes" immediate="true" oncomplete="#{rich:component('c_termes')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#{termesController.imprimer()}" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_termes" domElementAttachment="form" autosized="true" height="180" width="300" header="NOUVEAU TERME">
+                    <h:form id="f_c_termes">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Nom du crédit:" for="nomcredit" />
+                            <h:inputText id="nomcredit" value="#{termesController.termes.nomcredit}" title="Nomcredit" />
+                            <rich:message for="nomcredit"/>
+                            <h:outputLabel value="Durée du crédit (Mois):" for="dureecredit" />
+                            <h:inputText id="dureecredit" value="#{termesController.termes.dureecredit}" title="Dureecredit" />
+                            <rich:message for="dureecredit"/>
+                            <h:outputLabel value="Acompte (%):" for="acompte" />
+                            <h:inputText id="acompte" value="#{termesController.termes.acompte}" title="Acompte" />
+                            <rich:message for="acompte"/>
+                            <h:outputLabel value="Nbre de mensualité (Mois):" for="nbremensualite" />
+                            <h:inputText id="nbremensualite" value="#{termesController.termes.nbremensualite}" title="Nbremensualite" />
+                            <rich:message for="nbremensualite"/>
+                            <h:outputLabel value="Nbre de jours de grace (Jours):" for="nbrejourgrace" />
+                            <h:inputText id="nbrejourgrace" value="#{termesController.termes.nbrejourgrace}" title="Nbrejourgrace" />
+                            <rich:message for="nbrejourgrace"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_termes')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{termesController.saveTermes()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_termes" domElementAttachment="form" autosized="true" height="180" width="300" header="MODIFICATION TERME">
+                    <h:form id="f_m_termes">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Nom du crédit:" for="nomcredit" />
+                            <h:inputText id="nomcredit" value="#{termesController.termes.nomcredit}" title="Nomcredit" />
+                            <rich:message for="nomcredit"/>
+                            <h:outputLabel value="Durée du crédit (Mois):" for="dureecredit" />
+                            <h:inputText id="dureecredit" value="#{termesController.termes.dureecredit}" title="Dureecredit" />
+                            <rich:message for="dureecredit"/>
+                            <h:outputLabel value="Acompte (%):" for="acompte" />
+                            <h:inputText id="acompte" value="#{termesController.termes.acompte}" title="Acompte" />
+                            <rich:message for="acompte"/>
+                            <h:outputLabel value="Nbre de mensualité (Mois):" for="nbremensualite" />
+                            <h:inputText id="nbremensualite" value="#{termesController.termes.nbremensualite}" title="Nbremensualite" />
+                            <rich:message for="nbremensualite"/>
+                            <h:outputLabel value="Nbre de jours de grace (Jours):" for="nbrejourgrace" />
+                            <h:inputText id="nbrejourgrace" value="#{termesController.termes.nbrejourgrace}" title="Nbrejourgrace" />
+                            <rich:message for="nbrejourgrace"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_termes')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{termesController.editTermes()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_termes" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION TERME">
+                    <h:form id="f_s_termes">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_termes')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{termesController.deleteTermes()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ListeClientExel" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bed929b5-3e49-443b-8104-b84c6314ff0a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT idclient, lastname, firstname, clientuniqnumber, nationality, totalbox, preferredphone, phoneorange, phonemtn, phonenexttel, acquisitdate From client where lastname !='- -' order by lastname]]>
+	</queryString>
+	<field name="idclient" class="java.lang.Long"/>
+	<field name="lastname" class="java.lang.String"/>
+	<field name="firstname" class="java.lang.String"/>
+	<field name="clientuniqnumber" class="java.lang.Integer"/>
+	<field name="nationality" class="java.lang.String"/>
+	<field name="totalbox" class="java.lang.Integer"/>
+	<field name="preferredphone" class="java.lang.String"/>
+	<field name="phoneorange" class="java.lang.String"/>
+	<field name="phonemtn" class="java.lang.String"/>
+	<field name="phonenexttel" class="java.lang.String"/>
+	<field name="acquisitdate" class="java.sql.Date"/>
+	<variable name="Total_All_Client" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{idclient}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="62" splitType="Stretch">
+			<image>
+				<reportElement x="40" y="0" width="148" height="62" uuid="35131927-5079-4907-851a-c7d910fc41e0"/>
+				<imageExpression><![CDATA["E:\\Cours JEE\\Projet JEE\\uWIP4\\uWIP4-war\\web\\images\\LOGO\\logo_organization.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement x="244" y="0" width="286" height="60" uuid="d55bca80-4010-456e-a97c-ff2551722a7b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="36" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Liste des clients]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="18" y="2" width="154" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="411481bd-b93d-4ffa-a247-0122a3cbdfce"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Noms et prénoms]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="172" y="2" width="71" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="72609fc4-e59c-420d-8195-5f852688f523"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nationnalité]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="243" y="2" width="67" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="518cdffd-8120-42a2-a67e-d32329b88159"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. Client]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="310" y="2" width="66" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="ed99195a-2e3c-474b-b3bb-1897e7ce8f5f"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Box]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="376" y="2" width="78" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="176c1556-d995-444e-9ea4-66ebf769b0ce"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tel. Pref.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="454" y="2" width="82" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="14063d02-1640-4eec-bb5e-ec086f769eff"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tel. Orange]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="536" y="2" width="78" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="23d570f9-728c-40b6-a9f2-4a27eae9d2bb"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tel. MTN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="614" y="2" width="70" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="1efd1d45-6fe0-44a9-8050-48020719430e"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tel. Nexttel]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="684" y="2" width="118" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="9b2c2818-b3d9-46a5-bdd7-3c78d882f725"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date 1ere Signature]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="18" y="0" width="154" height="20" uuid="0176a98e-e9c1-4f02-bbf3-7082e1881069"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lastname}+" "+$F{firstname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="0" width="71" height="20" uuid="725a1c98-2b33-4b80-a2c4-30d41cb79390"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nationality}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="243" y="0" width="67" height="20" uuid="bc2cd3ab-2347-4858-a4e1-20d5987b85c0"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{clientuniqnumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="0" width="66" height="20" uuid="0cc0b148-a983-4487-8819-3427bafed508"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalbox}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="376" y="0" width="78" height="20" uuid="88aba662-71aa-48a8-9638-54f1dd83cd65"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{preferredphone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="454" y="0" width="82" height="20" uuid="062127f7-0ba1-4d2e-9060-adc3adbf1e69"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{phoneorange}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="536" y="0" width="78" height="20" uuid="b063b068-1f5a-4430-9bf9-46dd0da4323a"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{phonemtn}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="614" y="0" width="70" height="20" uuid="5fe34e15-a70d-4bf3-8b39-7c2491d21980"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{phonenexttel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="684" y="0" width="118" height="20" uuid="cf4123b5-3bee-418f-9a01-425413e92943"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{acquisitdate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="18" y="25" width="218" height="20" uuid="a5d751b1-199b-4085-a88d-ea9413c2c6c5"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="656" y="25" width="80" height="20" uuid="7b5cbcbf-1cd7-4c7d-a90e-ecb544b83ac2"/>
+				<textElement textAlignment="Right">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="736" y="25" width="40" height="20" uuid="faee0918-e887-49f0-a748-8189f8bb6544"/>
+				<textElement>
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="18" y="0" width="71" height="20" forecolor="#FFFFFF" backcolor="#FF9933" uuid="ec7b117d-2cb0-4e5c-9da1-97a797c5a7ce"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+					<topPen lineWidth="1.0" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="89" y="0" width="71" height="20" uuid="005be610-6782-4de3-9abf-11305986d64a"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Total_All_Client}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="0" y="36" width="802" height="15" backcolor="#FF9900" uuid="5cb1cc2b-63ad-4cce-8c81-9aaa6b0e3662"/>
+			</rectangle>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{clientController.showMessage}" />
+        <f:viewParam name="notify" value="#{clientController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{clientController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{clientController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des clients"/></h1>
+                <p:dataTable value="#{clientController.listClient}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.idclient}">                   
+                    <p:column width="210" sortOrder="ascending" sortBy="#{item.idclient}">
+                        <f:facet name="header">
+                            <h:outputText value="REF.CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient}"/>
+                    </p:column>
+                    <p:column width="250" sortOrder="ascending" sortBy="#{item.lastname} #{item.firstname}">
+                        <f:facet name="header">
+                            <h:outputText value="NOMS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastname} #{item.firstname}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="SIGNE DISTINCTIF"/>
+                        </f:facet>
+                        <h:outputText value="#{item.signedistinctif}"/>
+                    </p:column>                    
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="NATIONALITE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nationality}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL BOX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalbox}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="PHONE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.phoneorange}-#{item.phonemtn}-#{item.phonenexttel}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="1ER CONTRACT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.acquisitdate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="MOBILE MONEY"/>
+                        </f:facet>
+                        <h:outputText value="#{item.mobilemoney}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="COMMUNE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.municipality}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="VILLAGE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.village}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_client')}.show()" actionListener="#{clientController.prepareEdit()}" render="m_client,f_m_client" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{clientController.client}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_client')}.show()" actionListener="#{clientController.deleteClient()}" render="s_client,f_s_client" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{clientController.client}"/>
+                        </a4j:commandButton>
+                    </p:column>                   
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{clientController.prepareCreate()}" render="c_client,f_c_client" immediate="true" oncomplete="#{rich:component('c_client')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#{clientController.imprimer()}" />
+                <h:commandButton immediate="true"  value="EXEL" style="color:green;" action="#{clientController.imprimerExcel()}" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_client" domElementAttachment="form" autosized="true" height="350" width="300" header="NOUVEAU CLIENT">
+                    <h:form id="f_c_client">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Nom:" for="lastname" />
+                            <h:inputText id="lastname" value="#{clientController.client.lastname}" title="Lastname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Prénom:" for="firstname" />
+                            <h:inputText id="firstname" value="#{clientController.client.firstname}" title="Firstname" />
+                            <rich:message for="firstname"/>
+                            <h:outputLabel value="Phone.Preferé:" for="preferredphone" />
+                            <h:inputText id="preferredphone" value="#{clientController.client.preferredphone}" title="Preferredphone" />
+                            <rich:message for="preferredphone"/>
+                            <h:outputLabel value="Phone ORANGE:" for="phoneorange" />
+                            <h:inputText id="phoneorange" value="#{clientController.client.phoneorange}" title="Phoneorange" />
+                            <rich:message for="phoneorange"/>
+                            <h:outputLabel value="Phone MTN:" for="phonemtn" />
+                            <h:inputText id="phonemtn" value="#{clientController.client.phonemtn}" title="Phonemtn" />
+                            <rich:message for="phonemtn"/>
+                            <h:outputLabel value="Phone NEXTTEL:" for="phonenexttel" />
+                            <h:inputText id="phonenexttel" value="#{clientController.client.phonenexttel}" title="Phonenexttel" />
+                            <rich:message for="phonenexttel"/>                            
+                            <h:outputLabel value="Distinctif:" for="signedistinctif" />
+                            <h:inputText id="signedistinctif" value="#{clientController.client.signedistinctif}" title="Signedistinctif" />
+                            <rich:message for="signedistinctif"/>
+                            <h:outputLabel value="Operateur M.Money:" for="idoperator" />
+                            <h:selectOneMenu id="idoperator" value="#{clientController.client.idoperator.idoperator}" title="Mmoperator" >
+                                <f:selectItems value="#{clientController.listMmoperator}" var="m" itemLabel="#{m.code}" itemValue="#{m.idoperator}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idoperator"/>
+                            <h:outputLabel value="A un compte Mobile Money:" for="mobilemoney" title="Mobilemoney" />
+                            <rich:select id="mobilemoney" value="#{clientController.client.mobilemoney}">
+                                <f:selectItem itemValue="Pas de compte" itemLabel="Pas de compte" />
+                                <f:selectItem itemValue="Orange Money" itemLabel="Orange Money" />
+                                <f:selectItem itemValue="MTN Money" itemLabel="MTN Money" />
+                            </rich:select>
+                            <rich:message for="mobilemoney"/>
+                            <h:outputLabel value="Nationalité:" for="nationality" title="Nationality" />
+                            <rich:select id="nationality" value="#{clientController.client.nationality}">
+                                <f:selectItem itemValue="Cameroon" itemLabel="Cameroon" />
+                                <f:selectItem itemValue="France" itemLabel="France" />
+                            </rich:select>
+                            <rich:message for="nationality"/>                       
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_client')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{clientController.saveClient()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_client" domElementAttachment="form" autosized="true" height="320" width="300" header="MODIFICATION CLIENT">
+                    <h:form id="f_m_client">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Nom:" for="lastname" />
+                            <h:inputText id="lastname" value="#{clientController.client.lastname}" title="Lastname" />
+                            <rich:message for="lastname"/>
+                            <h:outputLabel value="Prénom:" for="firstname" />
+                            <h:inputText id="firstname" value="#{clientController.client.firstname}" title="Firstname" />
+                            <rich:message for="firstname"/>
+                            <h:outputLabel value="Phone.Preferé:" for="preferredphone" />
+                            <h:inputText id="preferredphone" value="#{clientController.client.preferredphone}" title="Preferredphone" />
+                            <rich:message for="preferredphone"/>
+                            <h:outputLabel value="Phone ORANGE:" for="phoneorange" />
+                            <h:inputText id="phoneorange" value="#{clientController.client.phoneorange}" title="Phoneorange" />
+                            <rich:message for="phoneorange"/>
+                            <h:outputLabel value="Phone MTN:" for="phonemtn" />
+                            <h:inputText id="phonemtn" value="#{clientController.client.phonemtn}" title="Phonemtn" />
+                            <rich:message for="phonemtn"/>
+                            <h:outputLabel value="Phone NEXTTEL:" for="phonenexttel" />
+                            <h:inputText id="phonenexttel" value="#{clientController.client.phonenexttel}" title="Phonenexttel" />
+                            <rich:message for="phonenexttel"/>                            
+                            <h:outputLabel value="Distinctif:" for="signedistinctif" />
+                            <h:inputText id="signedistinctif" value="#{clientController.client.signedistinctif}" title="Signedistinctif" />
+                            <rich:message for="signedistinctif"/>
+                            <h:outputLabel value="Operateur M.Money:" for="idoperator" />
+                            <h:selectOneMenu id="idoperator" value="#{clientController.client.idoperator.idoperator}" title="Mmoperator" >
+                                <f:selectItems value="#{clientController.listMmoperator}" var="m" itemLabel="#{m.code}" itemValue="#{m.idoperator}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idoperator"/>
+                            <h:outputLabel value="A un compte Mobile Money:" for="mobilemoney" title="Mobilemoney" />
+                            <rich:select id="mobilemoney" value="#{clientController.client.mobilemoney}">
+                                <f:selectItem itemValue="Pas de compte" itemLabel="Pas de compte" />
+                                <f:selectItem itemValue="Orange Money" itemLabel="Orange Money" />
+                                <f:selectItem itemValue="MTN Money" itemLabel="MTN Money" />
+                            </rich:select>
+                            <rich:message for="mobilemoney"/>
+                            <h:outputLabel value="Nationalité:" for="nationality" title="Nationality" />
+                            <rich:select id="nationality" value="#{clientController.client.nationality}">
+                                <f:selectItem itemValue="Cameroon" itemLabel="Cameroon" />
+                                <f:selectItem itemValue="France" itemLabel="France" />
+                            </rich:select>
+                            <rich:message for="nationality"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_client')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{clientController.editClient()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_client" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION CLIENT">
+                    <h:form id="f_s_client">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_client')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{clientController.deleteClient()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

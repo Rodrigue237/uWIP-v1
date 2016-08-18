@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{contractController.showMessage}" />
+        <f:viewParam name="notify" value="#{contractController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu> 
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{contractController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{contractController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des installations"/></h1>
+                <p:dataTable value="#{contractController.listContract}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="1">                    
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="No D'INSTAL."/>
+                        </f:facet>
+                        <h:outputText value="#{item.idboxe.numbox}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DATE INSTAL."/>
+                        </f:facet>
+                        <h:outputText value="#{item.installdate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="UTILISATEUR"/>
+                        </f:facet>
+                        <h:outputText value="#{item.userofsystem}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="No.UTILISATEUR."/>
+                        </f:facet>
+                        <h:outputText value="#{item.numusersystem}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TELEPHONE UTILISATEUR."/>
+                        </f:facet>
+                        <h:outputText value="#{item.phoneofusersystem}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="No.PLATINE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idboxe.numpcb}"/>
+                    </p:column>                   
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TYPE D'INSTAL."/>
+                        </f:facet>
+                        <h:outputText value="#{item.typeinstall}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ENEO."/>
+                        </f:facet>
+                        <h:outputText value="#{item.natconnect}"/>
+                    </p:column>                   
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="COMMUNE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.municipality}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="VILLAGE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.village}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DETTE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.moneybalance}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="STATUT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.installstatus}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DATE DESINSTAL."/>
+                        </f:facet>
+                        <h:outputText value="#{item.desinstalldate}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_contract')}.show()" actionListener="#{contractController.prepareEdit()}" render="m_contract,f_m_contract" value="Modifier" style="width: 200px">
+                            <f:setPropertyActionListener value="#{item}" target="#{contractController.contract}"/>
+                        </a4j:commandButton>
+                    </p:column>  
+                </p:dataTable>
+                <hr/>
+                <!--Creations des bouttons !-->
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                
+                <rich:popupPanel show="false" id="m_contract" domElementAttachment="form" autosized="true" height="500" width="300" header="MODIFICATION INSTALLATION">
+                    <h:form id="f_m_contract">  
+                        <h:panelGrid columns="3" id="c_data">                            
+                            <h:outputLabel value="Dette:" for="moneybalance" />
+                            <h:inputText id="moneybalance" value="#{contractController.contract.moneybalance}" title="Moneybalance" />
+                            <rich:message for="moneybalance"/>            
+                            <h:outputLabel value="Utilisateur:" for="userofsystem" />
+                            <h:inputText id="userofsystem" value="#{contractController.userOfSystem}" title="Utilisateur" />
+                            <rich:message for="userofsystem"/>
+                            <h:outputLabel value="Téléphone d'utilisateur:" for="phoneofusersystem" />
+                            <h:inputText id="phoneofusersystem" value="#{contractController.phoneUserSystem}" title="Phoneofusersystem" />
+                            <rich:message for="phoneofusersystem"/>
+                            <h:outputLabel value="Numéro utilisateur:" for="numusersystem" />
+                            <h:inputText id="numusersystem" value="#{contractController.contract.numusersystem}" title="Numusersystem" />
+                            <rich:message for="numusersystem"/>                                                        
+                            <h:outputLabel value="Numéro d'installation:" for="numbox" />
+                            <h:inputText id="numbox" value="#{contractController.numInstall}" title="Numbox" />
+                            <rich:message for="numbox"/>
+                            <h:outputLabel value="Type d'installation:" for="typeinstall" title="Typeinstall" />
+                            <rich:select id="typeinstall" value="#{contractController.contract.typeinstall}">
+                                <f:selectItem itemValue="Domestic" itemLabel="Domestique" />
+                                <f:selectItem itemValue="Professional" itemLabel="Professionnelle" />
+                            </rich:select>
+                            <rich:message for="typeinstall"/>
+                            <h:outputLabel value="Latitude:" for="latitude" />
+                            <h:inputText id="latitude" value="#{contractController.latitudeinstal}" title="Latitude" />
+                            <rich:message for="latitude"/>
+                            <h:outputLabel value="Longitude:" for="longitude" />
+                            <h:inputText id="longitude" value="#{contractController.longitudeinstal}" title="Longitude" />
+                            <rich:message for="longitude"/>
+                            <h:outputLabel value="Village:" for="village" />
+                            <h:inputText id="village" value="#{contractController.contract.village}" title="Village" />
+                            <rich:message for="village"/>
+                            <h:outputLabel value="Municipalité:" for="municipality" />
+                            <h:inputText id="municipality" value="#{contractController.contract.municipality}" title="Municipality" />
+                            <rich:message for="municipality"/>                    
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_contract')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{contractController.editContract()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

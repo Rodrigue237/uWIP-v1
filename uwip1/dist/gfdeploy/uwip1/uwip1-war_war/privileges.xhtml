@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{privilegeController.showMessage}" />
+        <f:viewParam name="notify" value="#{privilegeController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{privilegeController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{privilegeController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des privileges"/></h1>
+                <p:dataTable value="#{privilegeController.listPrivilege}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="15" style="margin-bottom:20px">
+                    <p:column sortOrder="ascending" sortBy="#{item.idprivilege}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idprivilege}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Description"/>
+                        </f:facet>
+                        <h:outputText value="#{item.description}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Key"/>
+                        </f:facet>
+                        <h:outputText value="#{item.key}"/>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{privilegeController.prepareCreate()}" render="c_privilege,f_c_privilege" immediate="true" oncomplete="#{rich:component('c_privilege')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_privilege" domElementAttachment="form" autosized="true" height="150" width="300" header="NOUVEAU PRIVILEGE">
+                    <h:form id="f_c_privilege">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Description:" for="description" />
+                            <h:inputText id="description" value="#{privilegeController.privilege.description}" title="Description" />
+                            <rich:message for="description"/>
+                            <h:outputLabel value="Key:" for="key" />
+                            <h:inputText id="key" value="#{privilegeController.privilege.key}" title="Key" />
+                            <rich:message for="key"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_privilege')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{privilegeController.savePrivilege()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_privilege" domElementAttachment="form" autosized="true" height="150" width="300" header="MODIFICATION PRIVILEGE">
+                    <h:form id="f_m_privilege">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Description:" for="description" />
+                            <h:inputText id="description" value="#{privilegeController.privilege.description}" title="Description" />
+                            <rich:message for="description"/>
+                            <h:outputLabel value="Key:" for="key" />
+                            <h:inputText id="key" value="#{privilegeController.privilege.key}" title="Key" />
+                            <rich:message for="key"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_privilege')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{privilegeController.editPrivilege()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_privilege" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION PRIVILEGE">
+                    <h:form id="f_s_privilege">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_privilege')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{privilegeController.deletePrivilege()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

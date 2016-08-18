@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{mmoperatorController.showMessage}" />
+        <f:viewParam name="notify" value="#{mmoperatorController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{mmoperatorController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{mmoperatorController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des MM opérateurs "/></h1>
+                <p:dataTable value="#{mmoperatorController.listMmoperator}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px">
+                    <p:column sortOrder="ascending" sortBy="#{item.idoperator}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="No"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idoperator}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.code}"/>
+                    </p:column>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_mmoperator')}.show()" actionListener="#{mmoperatorController.prepareEdit()}" render="m_mmoperator,f_m_mmoperator" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{mmoperatorController.mmoperator}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_mmoperator')}.show()" actionListener="#{mmoperatorController.deleteMmoperator()}" render="s_mmoperator,f_s_mmoperator" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{mmoperatorController.mmoperator}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{mmoperatorController.prepareCreate()}" render="c_mmoperator,f_c_mmoperator" immediate="true" oncomplete="#{rich:component('c_mmoperator')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_mmoperator" domElementAttachment="form" autosized="true" height="150" width="300" header="NOUVEAU MM-OPERATEUR">
+                    <h:form id="f_c_mmoperator">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Code:" for="code" />
+                            <h:inputText id="code" value="#{mmoperatorController.mmoperator.code}" title="Code" />
+                            <rich:message for="code"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_mmoperator')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{mmoperatorController.saveMmoperator()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_mmoperator" domElementAttachment="form" autosized="true" height="150" width="300" header="MODIFICATION MM-OPERATEUR">
+                    <h:form id="f_m_mmoperator">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Code:" for="code" />
+                            <h:inputText id="code" value="#{mmoperatorController.mmoperator.code}" title="Code" />
+                            <rich:message for="code"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_mmoperator')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{mmoperatorController.editMmoperator()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_mmoperator" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION MM-OPERATEUR">
+                    <h:form id="f_s_mmoperator">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_mmoperator')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{mmoperatorController.deleteMmoperator()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

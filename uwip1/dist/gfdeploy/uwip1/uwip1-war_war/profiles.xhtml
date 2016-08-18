@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{profileController.showMessage}" />
+        <f:viewParam name="notify" value="#{profileController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{profileController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{profileController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des profiles"/></h1>
+                <p:dataTable value="#{profileController.listProfile}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px; width:1150px">
+                    <p:column sortOrder="ascending" sortBy="#{item.idprofile}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idprofile}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="LISTE DES PRIVILEGES"/>
+                        </f:facet>
+                        <h:outputText value="#{item.configprivilege}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="NOM DU PROFIL"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_profile')}.show()" actionListener="#{profileController.prepareEdit()}" render="m_profile,f_m_profile" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{profileController.profile}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_profile')}.show()" actionListener="#{profileController.deleteProfile()}" render="s_profile,f_s_profile" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{profileController.profile}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{profileController.prepareCreate()}" render="c_profile,f_c_profile" immediate="true" oncomplete="#{rich:component('c_profile')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_profile" domElementAttachment="form" autosized="true" height="420" width="640" header="NOUVEAU PROFILE">
+                    <h:form id="f_c_profile">
+                        <h:panelGrid id="c_data">
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="Nom:" for="name" />
+                                <h:panelGroup>
+                                    <h:inputText id="name" value="#{profileController.profile.name}" title="Name" />
+                                    <rich:message for="name"/>
+                                </h:panelGroup> 
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="2">
+                                <rich:pickList listWidth="250" id="c_privile" value="#{profileController.listOfSelectedPrivileges}" sourceCaption="Privileges disponibles" targetCaption="Privileges associé à ce profil" listHeight="300" >
+                                    <f:selectItems value="#{profileController.listPrivilege}" var="m" itemLabel="#{m.description}" itemValue="#{m.idprivilegeacces}"/>
+                                </rich:pickList>
+                                <rich:message id="c_msg_config" for="c_config" />
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_profile')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{profileController.saveProfile()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+
+                </rich:popupPanel>
+
+                <!--Formulaire modification-->
+                <rich:popupPanel show="false" id="m_profile" domElementAttachment="form" autosized="true" height="420" width="640" header="MODIFIER PROFILE">
+                    <h:form id="f_m_profile">
+                        <h:panelGrid id="c_data" columns="3">
+                            <h:outputLabel value="Nom:" for="name" />
+                            <h:inputText id="name" value="#{profileController.profile.name}" title="Name" />           
+                            <rich:message for="name"/>
+                            <br/>
+                            <rich:pickList listWidth="250" id="m_privile" value="#{profileController.listOfSelectedPrivileges}" sourceCaption="Privileges disponibles" targetCaption="Privileges associé à ce profil" listHeight="300" >
+                                <f:selectItems value="#{profileController.listPrivilege}" var="m" itemLabel="#{m.description}" itemValue="#{m.idprivilegeacces}"/>
+                            </rich:pickList>
+                            <rich:message id="c_msg_config" for="c_config" />
+                        </h:panelGrid>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_profile')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{profileController.editProfile()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

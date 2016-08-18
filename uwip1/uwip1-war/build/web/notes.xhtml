@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{noteController.showMessage}" />
+        <f:viewParam name="notify" value="#{noteController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{noteController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{noteController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des notes"/></h1>
+                <p:dataTable value="#{noteController.listNote}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px">
+                    <p:column sortOrder="ascending" sortBy="#{item.idnote}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="Line"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idnote}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DISTRIBUTEUR"/>
+                        </f:facet>
+                        <h:outputText value="#{item.iddistributor.lastname} #{item.iddistributor.firstname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.lastname} #{item.idclient.firstname}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="BOX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idboxe.refbox}"/>
+                    </p:column>
+                    <p:column style="width: 30px">
+                        <f:facet name="header">
+                            <h:outputText value="Voir"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('v_note')}.show()" actionListener="#{noteController.prepareEdit()}" render="v_note,f_v_note" image="/images/ICONS/Eyes.png" style="width: 30px">
+                            <f:setPropertyActionListener value="#{item}" target="#{noteController.note}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_note')}.show()" actionListener="#{noteController.prepareEdit()}" render="m_note,f_m_note" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{noteController.note}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('s_note')}.show()" actionListener="#{noteController.deleteNote()}" render="s_note,f_s_note" value="Supprimer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{noteController.note}"/>
+                        </a4j:commandButton>
+                    </p:column>                    
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{noteController.prepareCreate()}" render="c_note,f_c_note" immediate="true" oncomplete="#{rich:component('c_note')}.show()" value="Ajouter"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#{noteController.imprimer()}" />
+
+                <!--Formulaire d'ajout-->
+                <rich:popupPanel show="false" id="c_note" domElementAttachment="form" autosized="true" height="220" width="300" header="NOUVELLE NOTE">
+                    <h:form id="f_c_note">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Organisation:" for="idorganization" />
+                            <h:selectOneMenu id="idorganization" value="#{noteController.note.idorganization.idorganization}" title="Organization" >
+                                <f:selectItems value="#{noteController.listOrganization}" var="o" itemLabel="#{o.name}" itemValue="#{o.idorganization}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idorganization"/>
+                            <h:outputLabel value="Distributeur:" for="iddistributor" />
+                            <h:selectOneMenu id="iddistributor" value="#{noteController.note.iddistributor.iddistributor}" title="Distributor" >
+                                <f:selectItems value="#{noteController.listDistributor}" var="d" itemLabel="#{d.firstname} #{d.lastname}" itemValue="#{d.iddistributor}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="iddistributor"/>
+                            <h:outputLabel value="Client:" for="idclient" />
+                            <h:selectOneMenu id="idclient" value="#{noteController.note.idclient.idclient}" title="Client" >
+                                <f:selectItems value="#{noteController.listClient}" var="c" itemLabel="#{c.firstname} #{c.lastname}" itemValue="#{c.idclient}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idclient"/>
+                            <h:outputLabel value="Box:" for="idboxe" />
+                            <h:selectOneMenu id="idboxe" value="#{noteController.note.idboxe.idboxe}" title="Box" >
+                                <f:selectItems value="#{noteController.listBox}" var="b" itemLabel="#{b.refbox}" itemValue="#{b.idboxe}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idboxe"/>
+                            <h:outputLabel value="Notes:" for="content" />
+                            <h:inputTextarea id="content" value="#{noteController.note.content}" rows="5" cols="30" title="Content" />
+                            <rich:message for="content"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_note')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{noteController.saveNote()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de modification-->
+                <rich:popupPanel show="false" id="m_note" domElementAttachment="form" autosized="true" height="220" width="300" header="MODIFICATION NOTE">
+                    <h:form id="f_m_note">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Organisation:" for="idorganization" />
+                            <h:selectOneMenu id="idorganization" value="#{noteController.note.idorganization.idorganization}" title="Organization" >
+                                <f:selectItems value="#{noteController.listOrganization}" var="o" itemLabel="#{o.name}" itemValue="#{o.idorganization}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idorganization"/>
+                            <h:outputLabel value="Distributeur:" for="iddistributor" />
+                            <h:selectOneMenu id="iddistributor" value="#{noteController.note.iddistributor.iddistributor}" title="Distributor" >
+                                <f:selectItems value="#{noteController.listDistributor}" var="d" itemLabel="#{d.firstname} #{d.lastname}" itemValue="#{d.iddistributor}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="iddistributor"/>
+                            <h:outputLabel value="Client:" for="idclient" />
+                            <h:selectOneMenu id="idclient" value="#{noteController.note.idclient.idclient}" title="Client" >
+                                <f:selectItems value="#{noteController.listClient}" var="c" itemLabel="#{c.firstname} #{c.lastname}" itemValue="#{c.idclient}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idclient"/>
+                            <h:outputLabel value="Box:" for="idboxe" />
+                            <h:selectOneMenu id="idboxe" value="#{noteController.note.idboxe.idboxe}" title="Box" >
+                                <f:selectItems value="#{noteController.listBox}" var="b" itemLabel="#{b.refbox}" itemValue="#{b.idboxe}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idboxe"/>
+                            <h:outputLabel value="Notes:" for="content" />
+                            <h:inputTextarea id="content" value="#{noteController.note.content}" rows="5" cols="30" title="Content" />
+                            <rich:message for="content"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_note')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{noteController.editNote()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Formulaire de suppression-->
+                <rich:popupPanel show="false" id="s_note" domElementAttachment="form" autosized="true" height="80" width="300" header="SUPPRESSION NOTE">
+                    <h:form id="f_s_note">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Voulez-vous réelement supprimer" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('s_note')}.hide()" value="Annuler" type="button" style="color:red"/>
+                            <a4j:commandButton action="#{noteController.deleteNote()}" value="OK"/> 
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+                <!--Popup de detail-->
+                <rich:popupPanel show="false" id="v_note" domElementAttachment="form" autosized="true" height="110" width="300" header="DETAIL">
+                    <h:form id="f_v_note">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="#{noteController.note.content}" for="content" style="font-size: 12pt; font-style: italic" />
+                            <rich:message for="content"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:commandButton onclick="#{rich:component('v_note')}.hide()" value="OK" type="button" style="color:#ED8D14"/>
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

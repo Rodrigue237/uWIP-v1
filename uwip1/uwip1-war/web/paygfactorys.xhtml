@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{ortherController.showMessagePOP}" />
+        <f:viewParam name="notify" value="#{ortherController.messagePOP}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{ortherController.showMessagePOP}">
+                <f:facet name="detail">
+                    <h:outputText value="#{ortherController.messagePOP}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="PAYG ELEMENTS FACTORY"/></h1>
+                <p:dataTable value="#{ortherController.listPaygotpgenerator2}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.idline}">
+                    <p:column sortOrder="ascending" sortBy="#{item.idline}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="Line"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idline}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="PAYG ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.paygproductid}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="PRODUCT CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.productcode}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="SALT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.salt}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="SEED"/>
+                        </f:facet>
+                        <h:outputText value="#{item.seed}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="H-ROOT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.hroot}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="H-TOP"/>
+                        </f:facet>
+                        <h:outputText value="#{item.htop}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="OEM PRODUCT ID"/>
+                        </f:facet>
+                        <h:outputText value="#{item.oemproductid}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="OEM LIFE CYCLE STATUS"/>
+                        </f:facet>
+                        <h:outputText value="#{item.oemlifecyclestatus}"/>
+                    </p:column>                   
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="OTP-COUNT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.otpcount}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CURRENT HASH INDEX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.currenthashindex}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="HASH CHAIN LENGTH"/>
+                        </f:facet>
+                        <h:outputText value="#{item.hashchainlength}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="MAX HCJ"/>
+                        </f:facet>
+                        <h:outputText value="#{item.maxhcj}"/>
+                    </p:column>                   
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="BATCH NUMBER"/>
+                        </f:facet>
+                        <h:outputText value="#{item.batchnumber}"/>
+                    </p:column>                  
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{ortherController.prepareCreatePaygFactory()}" render="c_payg,f_c_payg" immediate="true" oncomplete="#{rich:component('c_payg')}.show()" value="New PAYG"/>
+                <a4j:commandButton actionListener="#{ortherController.prepareCreatePaygFactory()}" render="c_seed,f_c_seed" immediate="true" oncomplete="#{rich:component('c_seed')}.show()" value="AUTO GENERATE SEED"/>
+                <a4j:commandButton actionListener="#{ortherController.prepareCreatePaygFactory()}" render="c_hroot,f_c_hroot" immediate="true" oncomplete="#{rich:component('c_hroot')}.show()" value="AUTO GENERATE H-ROOT"/>
+                <a4j:commandButton actionListener="#{ortherController.prepareCreatePaygFactory()}" render="c_htop,f_c_htop" immediate="true" oncomplete="#{rich:component('c_htop')}.show()" value="AUTO GENERATE H-TOP"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+                <!--Formulaire New PAYG !-->
+                <rich:popupPanel show="false" id="c_payg" domElementAttachment="form" autosized="true" height="100" width="300" header="NEW PAYG DISCOVERY">
+                    <h:form id="f_c_payg">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="PAYG ID:" for="paygid" />
+                            <h:inputText id="paygid" value="#{ortherController.paygotpgenerator2.paygproductid}" title="Paygid" />
+                            <rich:message for="paygid"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_payg')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{ortherController.saveFirstPaygFactory()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire New SEED !-->
+                <rich:popupPanel show="false" id="c_seed" domElementAttachment="form" autosized="true" height="80" width="300" header="SEED DISCOVERY">
+                    <h:form id="f_c_seed">
+                        <h:panelGrid columns="1" id="c_data">
+                            <h:outputLabel value="Confirmez l'execution" for="seed" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_seed')}.hide()"/>
+                            <a4j:commandButton value="Executez" action="#{ortherController.autoGenerateAllSEED()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire New H-ROOT !-->
+                <rich:popupPanel show="false" id="c_hroot" domElementAttachment="form" autosized="true" height="80" width="300" header="H-ROOT DISCOVERY">
+                    <h:form id="f_c_hroot">
+                        <h:panelGrid columns="1" id="c_data">
+                            <h:outputLabel value="Confirmez l'execution" for="seed" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_hroot')}.hide()"/>
+                            <a4j:commandButton value="Executez" action="#{ortherController.autoGenerateAllHROOT()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire New H-ROOT !-->
+                <rich:popupPanel show="false" id="c_htop" domElementAttachment="form" autosized="true" height="80" width="300" header="H-TOP DISCOVERY">
+                    <h:form id="f_c_htop">
+                        <h:panelGrid columns="1" id="c_data">
+                            <h:outputLabel value="Confirmez l'execution" for="seed" />
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_htop')}.hide()"/>
+                            <a4j:commandButton value="Executez" action="#{ortherController.autoGenerateAllHTOP()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

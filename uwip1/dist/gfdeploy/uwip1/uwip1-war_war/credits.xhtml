@@ -1,0 +1,338 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{creditController.showMessage}" />
+        <f:viewParam name="notify" value="#{creditController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{rtocontractController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{rtocontractController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des credits"/></h1>
+                <p:dataTable value="#{rtocontractController.listCredits}" var="item" scrollable="true" scrollHeight="500" scrollWidth="560" frozenColumns="2" selectionMode="single" rowKey="#{item.numinstall}">                    
+                    <p:column sortOrder="ascending" sortBy="#{item.numinstall}" style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="NO. INSTALLATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.numinstall}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="SYSTEME"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idproduits.designation}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ID PAYG"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idpaygproduct.idpaygproduct}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TERME"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idtermes.nomcredit}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="QTE. LAMPE SUP. (CREDIT)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qteappsupcredit1}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="QTE. RADIO SUP. (CREDIT)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qteappsupcredit2}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="QTE. TORCHE SUP. (CREDIT)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qteappsupcredit3}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="QTE. LAMPE SUP. (CASH)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qteappsupcash1}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="QTE. RADIO SUP. (CASH)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qteappsupcash2}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="QTE. TORCHE SUP. (CASH)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qteappsupcash3}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL DU CREDIT (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalcredits}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ACOMPTE DU CREDIT (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.acomptecredit}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="ACOMPTE TOTAL (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.acomptetotal}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="PRIX 30 JOURS (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.prix1mois}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="PRIX 1 JOUR (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.prix1jour}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL MONTANT PAYE (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalmontantpaye}"/>
+                    </p:column>
+                    <p:column width="250">
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL MONTANT RESTANT (FrCFA)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalmontantrestant}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL GRACE UTILISE (Jr)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalgraceused}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="TOTAL GRACE RESTANT (Jr)"/>
+                        </f:facet>
+                        <h:outputText value="#{item.totalgracerestant}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="STATUT DU CREDIT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.creditstatus}"/>
+                    </p:column>
+                    <p:column width="230">
+                        <f:facet name="header">
+                            <h:outputText value="EXPIRATION DU DERNIER CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.codeenddate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DATE D'INSTALLATION"/>
+                        </f:facet>
+                        <h:outputText value="#{item.installdate}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="MOK BOX"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idpaygproduct.idpaygproduct}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="DERNIER CODE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastcode}"/>
+                    </p:column>
+                    <p:column width="210">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>          
+                        <a4j:commandButton oncomplete="#{rich:component('m_rtocontract')}.show()" actionListener="#{rtocontractController.prepareEdit()}" render="m_rtocontract,f_m_rtocontract" value="Modifier" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{rtocontractController.credits}"/>
+                        </a4j:commandButton>
+                        <a4j:commandButton oncomplete="#{rich:component('r_rtocontract')}.show()" actionListener="#{rtocontractController.prepareEdit()}" render="r_rtocontract,f_r_rtocontract" value="Reinitialiser" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{rtocontractController.credits}"/>
+                        </a4j:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <a4j:commandButton actionListener="#{rtocontractController.prepareCreate()}" render="c_rtocontract,f_c_rtocontract" immediate="true" oncomplete="#{rich:component('c_rtocontract')}.show()" value="Nouveau contrat"/>
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+
+                <!--Formulaire d'ajout de contrat-->
+                <rich:popupPanel show="false" id="c_rtocontract" domElementAttachment="form" autosized="true" height="370" width="340" header="NOUVEAU CONTRAT RTO">
+                    <h:form  id="f_c_rtocontract">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Client:" for="idclient" />
+                            <h:selectOneMenu id="idclient" value="#{rtocontractController.credits.idclient.idclient}" title="Client" >
+                                <f:selectItems value="#{rtocontractController.listClientPotentiel}" var="c" itemLabel="#{c.firstname} #{c.lastname}" itemValue="#{c.idclient}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idclient"/>
+                            <h:outputLabel value="Numéro d'installation:" for="numinstall" />
+                            <h:selectOneMenu id="numinstall" value="#{rtocontractController.numInstallIN}" title="Numinstall">
+                                <f:selectItems value="#{rtocontractController.listAllFreeCredits}" var="n" itemLabel="#{n.numinstall}" itemValue="#{n.numinstall}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="numinstall"/>
+                            <h:outputLabel value="Systeme:" for="idproduits" />
+                            <h:selectOneMenu id="idproduits" value="#{rtocontractController.credits.idproduits.idproduits}" title="Idproduits">
+                                <f:selectItems value="#{rtocontractController.listProduitSystem}" var="p" itemLabel="#{p.designation}" itemValue="#{p.idproduits}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idproduits"/>
+                            <h:outputLabel value="Terme souhaité:" for="idtermes" />
+                            <h:selectOneMenu id="idtermes" value="#{rtocontractController.credits.idtermes.idtermes}" title="Idtermes">
+                                <f:selectItems value="#{rtocontractController.listTermes}" var="t" itemLabel="#{t.nomcredit}" itemValue="#{t.idtermes}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idtermes"/>  
+                            <h1 style="color: #D20005"><h:outputText value="APPAREIL SUPP. A CREDIT"/></h1>
+                            <h:outputLabel value="Lampe crédit:" for="qteappsupcredit1" />
+                            <h:inputText id="qteappsupcredit1" value="#{rtocontractController.qteLampeSupCreditIN}" title="Qteappsupcredit1" />
+                            <rich:message for="qteappsupcredit1"/>
+                            <h:outputLabel value="Radio crédit:" for="qteappsupcredit2" />
+                            <h:inputText id="qteappsupcredit2" value="#{rtocontractController.qteRadioSupCreditIN}" title="Qteappsupcredit2" />
+                            <rich:message for="qteappsupcredit2"/>
+                            <h:outputLabel value="Torche crédit:" for="qteappsupcredit3" />
+                            <h:inputText id="qteappsupcredit3" value="#{rtocontractController.qteTorcheSupCreditIN}" title="Qteappsupcredit3" />
+                            <rich:message for="qteappsupcredit3"/>
+                            <h1 style="color: #D20005"><h:outputText value="APPAREIL SUPP. CASH"/></h1>
+                            <h:outputLabel value="Lampe cash:" for="qteappsupcash1" />
+                            <h:inputText id="qteappsupcash1" value="#{rtocontractController.qteLampeSupCashIN}" title="Qteappsupcash1" />
+                            <rich:message for="qteappsupcash1"/>
+                            <h:outputLabel value="Radio cash:" for="qteappsupcash2" />
+                            <h:inputText id="qteappsupcash2" value="#{rtocontractController.qteRadioSupCashIN}" title="Qteappsupcash2" />
+                            <rich:message for="qteappsupcash2"/>
+                            <h:outputLabel value="Torche cash:" for="qteappsupcash3" />
+                            <h:inputText id="qteappsupcash3" value="#{rtocontractController.qteTorcheSupCashIN}" title="Qteappsupcash3" />
+                            <rich:message for="qteappsupcash3"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('c_rtocontract')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{rtocontractController.savePreactiveCredit()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire modification de contrat-->
+                <rich:popupPanel show="false" id="m_rtocontract" domElementAttachment="form" autosized="true" height="320" width="300" header="MODIFICATION CONTRAT RTO">
+                    <h:form  id="f_m_rtocontract">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Client:" for="idclient" />
+                            <h:selectOneMenu id="idclient" value="#{rtocontractController.credits.idclient.idclient}" title="Client" >
+                                <f:selectItems value="#{rtocontractController.listClientPotentiel}" var="c" itemLabel="#{c.firstname} #{c.lastname}" itemValue="#{c.idclient}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idclient"/>
+                            <h:outputLabel value="Numéro d'installation:" for="numinstall" />
+                            <h:inputHidden id="numinstall" value="#{rtocontractController.credits.numinstall}" title="Numinstall" />
+                            <rich:message for="numinstall"/>
+                            <h:outputLabel value="Systeme:" for="idproduits" />
+                            <h:selectOneMenu id="idproduits" value="#{rtocontractController.credits.idproduits.idproduits}" title="Idproduits">
+                                <f:selectItems value="#{rtocontractController.listProduitSystem}" var="p" itemLabel="#{p.designation}" itemValue="#{p.idproduits}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idproduits"/>
+                            <h:outputLabel value="Terme souhaité:" for="idtermes" />
+                            <h:selectOneMenu id="idtermes" value="#{rtocontractController.credits.idtermes.idtermes}" title="Idtermes">
+                                <f:selectItems value="#{rtocontractController.listTermes}" var="t" itemLabel="#{t.nomcredit}" itemValue="#{t.idtermes}"/>
+                            </h:selectOneMenu>
+                            <rich:message for="idtermes"/>  
+                            <h1 style="color: #D20005"><h:outputText value="APPAREIL SUPP. A CREDIT"/></h1>
+                            <h:outputLabel value="Lampe crédit:" for="qteappsupcredit1" />
+                            <h:inputText id="qteappsupcredit1" value="#{rtocontractController.credits.qteappsupcredit1}" title="Qteappsupcredit1" />
+                            <rich:message for="qteappsupcredit1"/>
+                            <h:outputLabel value="Radio crédit:" for="qteappsupcredit2" />
+                            <h:inputText id="qteappsupcredit2" value="#{rtocontractController.credits.qteappsupcredit2}" title="Qteappsupcredit2" />
+                            <rich:message for="qteappsupcredit2"/>
+                            <h:outputLabel value="Torche crédit:" for="qteappsupcredit3" />
+                            <h:inputText id="qteappsupcredit3" value="#{rtocontractController.credits.qteappsupcredit3}" title="Qteappsupcredit3" />
+                            <rich:message for="qteappsupcredit3"/>
+                            <h1 style="color: #D20005"><h:outputText value="APPAREIL SUPP. CASH"/></h1>
+                            <h:outputLabel value="Lampe cash:" for="qteappsupcash1" />
+                            <h:inputText id="qteappsupcash1" value="#{rtocontractController.credits.qteappsupcash1}" title="Qteappsupcash1" />
+                            <rich:message for="qteappsupcash1"/>
+                            <h:outputLabel value="Radio cash:" for="qteappsupcash2" />
+                            <h:inputText id="qteappsupcash2" value="#{rtocontractController.credits.qteappsupcash2}" title="Qteappsupcash2" />
+                            <rich:message for="qteappsupcash2"/>
+                            <h:outputLabel value="Torche cash:" for="qteappsupcash3" />
+                            <h:inputText id="qteappsupcash3" value="#{rtocontractController.credits.qteappsupcash3}" title="Qteappsupcash3" />
+                            <rich:message for="qteappsupcash3"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_rtocontract')}.hide()"/>
+                            <a4j:commandButton value="Enregistrer" action="#{rtocontractController.editCredits()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+                
+                <!--Formulaire Re-initialisation de contrat-->
+                <rich:popupPanel show="false" id="r_rtocontract" domElementAttachment="form" autosized="true" height="100" width="300" header="RE-INITIALISATION CONTRAT RTO">
+                    <h:form  id="f_r_rtocontract">
+                        <h:panelGrid columns="2" id="c_data">
+                            <h:outputLabel value="Voulez-vous reellement re-initialiser?" for="numinstall" />
+                            <h:inputHidden id="numinstall" value="#{rtocontractController.credits.numinstall}" title="Numinstall" />           
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('r_rtocontract')}.hide()"/>
+                            <a4j:commandButton value="Oui" action="#{rtocontractController.resetCredits()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

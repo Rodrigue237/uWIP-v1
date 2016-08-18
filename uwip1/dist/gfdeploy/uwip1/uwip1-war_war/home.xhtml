@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="./resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <!--Integration du CSS de la carte-->
+        <link href="./resources/leaflet-0.7.3/leaflet.css" rel="stylesheet" type="text/css" /> 
+        <!--Integration du script de webmaping-->
+        <script src="./resources/leaflet-0.7.3/leaflet.js"></script>
+        <title>uWIP 1.0</title>
+    </h:head>
+
+    <h:body>
+        <f:view locale="#{sessionController.language}">
+            <div id="top" align="center">
+                <h:outputText style="font-size: 14pt; font-style: italic" value="uWIP 1.0"/>
+                <div align="right">
+                    <h:outputText style="font-size: 10pt; font-style: italic" value="#{lm.Connecte}:#{sessionController.connectedUser.firstname} #{sessionController.connectedUser.lastname}"/>
+                </div>
+            </div>
+            <div>
+                <div id="left">
+
+                    <ui:insert name="left">
+                        Power people now
+                        <h:form>
+                            <p:menu>
+                                <p:submenu label="Outils">
+                                    <p:menuitem value="Distances"/>
+                                    <p:menuitem value="Itinéraire"/>
+                                </p:submenu>
+                                <p:submenu label="Navigations">
+                                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                                    <p:menuitem value="Manual Code" url="http://www.upowa.org/ucode/"/>
+                                </p:submenu>
+                            </p:menu> 
+                            <a4j:commandButton image="/images/ICONS/france-flag.png" actionListener="#{sessionController.switchFr()}" immediate="true" render="@all"/>
+                            <a4j:commandButton image="/images/ICONS/usa-flag.png" actionListener="#{sessionController.switchEn()}" immediate="true" render="@all"/>
+                        </h:form>
+                    </ui:insert>
+
+                </div>
+                <div id="content" class="left_content">
+                    <ui:insert name="content">
+                        <ui:insert name="mytoolbar">
+                            <h:form>
+                                <rich:toolbar height="34" itemSeparator="line">
+                                    <rich:toolbarGroup id="menuapp">
+                                        <rich:dropDownMenu id="superadmin" mode="ajax" rendered="#{sessionController.porga}">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/superadmin.png" styleClass="pic" alt="superadmin" />
+                                                    <h:outputText value="#{lm.SuperAdmin}" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererOrganisation}" immediate="true" action="#{organizationController.organization()}" rendered="#{sessionController.porga}"/>
+                                            <rich:menuItem label="#{lm.GererUtilisateur}" immediate="true" action="#{uuserController.uuser()}" rendered="#{sessionController.pusra}"/>
+                                            <rich:menuItem label="#{lm.GererProfil}" immediate="true" action="#{profileController.profile()}" rendered="#{sessionController.pusra}"/>
+                                            <rich:menuItem label="#{lm.GererPrivilege}" immediate="true" action="#{privilegeController.privilege()}" rendered="#{sessionController.pusra}"/>
+                                            <rich:menuItem label="#{lm.GererClient}" immediate="true" action="#{clientController.client()}" rendered="#{sessionController.pclia}"/>
+                                            <rich:menuItem label="#{lm.GererBox}" immediate="true" action="#{boxController.box()}" rendered="#{sessionController.pboxa}"/>
+                                            <rich:menuItem label="#{lm.GererOperateur}" immediate="true" action="#{mmoperatorController.mmoperator()}" rendered="#{sessionController.pusra}"/>
+                                            <rich:menuItem label="#{lm.GererDistributeur}" immediate="true" action="#{distributorController.distributor()}" rendered="#{sessionController.pdisa}"/>
+                                            <rich:menuItem label="#{lm.GererNote}" immediate="true" action="#{noteController.note()}" rendered="#{sessionController.pnota}"/>
+                                            <rich:menuItem label="#{lm.GererCode}" immediate="true" action="#{codeController.code()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererLayerPays}" immediate="true" action="#{countrylayerController.countrylayer()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererLayerVille}" immediate="true" action="#{townlayerController.townlayer()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererSoftVers}" immediate="true" action="#{softversController.softvers()}" rendered="#{sessionController.porga}"/>
+                                            <rich:menuItem label="#{lm.GererHardVers}" immediate="true" action="#{hardversController.hardvers()}" rendered="#{sessionController.porga}"/>
+                                            <rich:menuItem label="Test OMNIVOLTAIC" immediate="true" action="#{ortherController.pagetest()}" rendered="#{sessionController.porga}"/>
+                                            <rich:menuItem label="Gérer les termes" immediate="true" action="#{termesController.termes()}" rendered="#{sessionController.pterm}"/>
+                                            <rich:menuItem label="Gérer les produits" immediate="true" action="#{produitsController.produits()}" rendered="#{sessionController.pprod}"/>
+                                            <rich:menuItem label="Gérer les credits" immediate="true" action="#{rtocontractController.credits()}" rendered="#{sessionController.pcred}"/>
+                                            <rich:menuItem label="Installations en attente" immediate="true" action="#{rtoinstallationsController.waitinginstallations()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Gérer les transactions" immediate="true" action="#{rtoinstallationsController.rtocodes()}" rendered="#{sessionController.ptrto}"/>
+                                            <rich:menuItem label="Gérer les taches automatiques" immediate="true" action="#{ortherController.pageAutoTasks()}" rendered="#{sessionController.porga}"/>
+                                            <rich:menuItem label="Initialiser les boxs" immediate="true" action="#{rtoinstallationsController.pageinitialisationboxs()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Gérer les SEED Factory" immediate="true" action="#{ortherController.pagePaygFactory()}" rendered="#{sessionController.porga}"/>
+                                            <rich:menuItem label="Liste des boxs initialisees" immediate="true" action="#{rtoinstallationsController.pageallfreeBoxToInstall()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Gerer la maintenance luciole" immediate="true" action="#{rtoinstallationsController.pageMaintenanceRTO()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Consulter les transactions" immediate="true" action="#{ortherController.pageTransactions()}" rendered="#{sessionController.pcred}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="admin" mode="ajax" rendered="#{sessionController.pusrb}">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/user.png" styleClass="pic" alt="admin" />
+                                                    <h:outputText value="Admin" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererClient}" immediate="true" action="#{clientController.client()}" rendered="#{sessionController.pclia}"/>
+                                            <rich:menuItem label="#{lm.GererBox}" action="#{boxController.box()}" rendered="#{sessionController.pboxa}"/>
+                                            <rich:menuItem label="#{lm.GererUtilisateur}" immediate="true" action="#{uuserController.uuser2()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererProfil}" immediate="true" action="#{profileController.profile()}" rendered="#{sessionController.pusra}"/>
+                                            <rich:menuItem label="#{lm.GererPrivilege}" immediate="true" action="#{privilegeController.privilege()}" rendered="#{sessionController.pusra}"/>
+                                            <rich:menuItem label="#{lm.GererOperateur}" immediate="true" action="#{mmoperatorController.mmoperator()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererDistributeur}" immediate="true" action="#{distributorController.distributor()}" rendered="#{sessionController.pdisa}"/>
+                                            <rich:menuItem label="#{lm.GererNote}" immediate="true" action="#{noteController.note()}" rendered="#{sessionController.pnotb}"/>
+                                            <rich:menuItem label="#{lm.GererCode}" immediate="true" action="#{codeController.code()}" rendered="#{sessionController.pcodb}"/>
+                                            <rich:menuItem label="#{lm.GererLayerPays}" immediate="true" action="#{countrylayerController.countrylayer()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererLayerVille}" immediate="true" action="#{townlayerController.townlayer()}" rendered="#{sessionController.pusrb}"/>
+                                            <rich:menuItem label="#{lm.GererOperateur}" immediate="true" action="#{mmoperatorController.mmoperator()}" rendered="#{sessionController.pusrb}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menuoffre" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/globe.png" styleClass="pic" alt="globe" />
+                                                    <h:outputText value="Offres" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="Gérer les termes" immediate="true" action="#{termesController.termes()}" rendered="#{sessionController.pterm}"/>
+                                            <rich:menuItem label="Gérer les produits" immediate="true" action="#{produitsController.produits()}" rendered="#{sessionController.pprod}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menuclient" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/gps33.png" styleClass="pic" alt="gps33" />
+                                                    <h:outputText value="#{lm.Client}" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererClient}" immediate="true" action="#{clientController.client()}" rendered="#{sessionController.pclia}"/>
+                                            <rich:menuItem label="#{lm.NvelleInstal}" immediate="true" action="#{contractController.contract()}" rendered="#{sessionController.pclia}"/>
+                                            <rich:menuItem label="#{lm.SuiviInstall}" immediate="true" action="#{contractController.installation()}" rendered="#{sessionController.pclia}"/>
+                                            <rich:menuItem label="Gérer les credits" immediate="true" action="#{rtocontractController.credits()}" rendered="#{sessionController.pcred}"/>
+                                            <rich:menuItem label="Gérer les transactions" immediate="true" action="#{rtoinstallationsController.rtocodes()}" rendered="#{sessionController.ptrto}"/>
+                                            <rich:menuItem label="Consulter les transactions" immediate="true" action="#{ortherController.pageTransactions()}" rendered="#{sessionController.pcred}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menubox" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/modules.png" styleClass="pic" alt="modules" />
+                                                    <h:outputText value="#{lm.Box}" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.Box}" action="#{boxController.box()}" rendered="#{sessionController.pboxb}"/>
+                                            <rich:menuItem label="Installations en attente" immediate="true" action="#{rtoinstallationsController.waitinginstallations()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Initialiser les boxs" immediate="true" action="#{rtoinstallationsController.pageinitialisationboxs()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Liste des boxs initialisees" immediate="true" action="#{rtoinstallationsController.pageallfreeBoxToInstall()}" rendered="#{sessionController.pwins}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menunote" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/compose.png" styleClass="pic" alt="modules" />
+                                                    <h:outputText value="Note" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererNote}" action="#" rendered="#{sessionController.pnota}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menucode" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/calco.png" styleClass="pic" alt="modules" />
+                                                    <h:outputText value="Code" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererCode}" action="#" rendered="#{sessionController.pcoda}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menudistributeur" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/arborescence.png" styleClass="pic" alt="modules" />
+                                                    <h:outputText value="#{lm.Distributeur}" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererDistributeur}" action="#" rendered="#{sessionController.pdisa}"/>
+                                        </rich:dropDownMenu>
+
+                                        <rich:dropDownMenu id="menutechnique" mode="ajax">
+                                            <f:facet name="label">
+                                                <h:panelGroup>
+                                                    <h:graphicImage value="/images/ICONS/Maintenance.png" styleClass="pic" alt="modules" />
+                                                    <h:outputText value="Technique" />
+                                                </h:panelGroup>
+                                            </f:facet>
+                                            <rich:menuItem label="#{lm.GererMaintenance}" action="#{boxController.maintenance()}" rendered="#{sessionController.pmtna}"/>
+                                            <rich:menuItem label="Installations en attente" immediate="true" action="#{rtoinstallationsController.waitinginstallations()}" rendered="#{sessionController.pwins}"/>
+                                            <rich:menuItem label="Gerer la maintenance luciole" immediate="true" action="#{rtoinstallationsController.pageMaintenanceRTO()}" rendered="#{sessionController.pwins}"/>
+                                        </rich:dropDownMenu>
+
+                                    </rich:toolbarGroup>
+                                    <rich:toolbarGroup location="right" id="recherche">
+                                        <p:inputText styleClass="barsearch" placeholder="Enter keyword"/>
+                                        <h:commandButton styleClass="barsearchbutton" action="#{sessionController.openSite()}" immediate="true"  value="Search" />
+                                    </rich:toolbarGroup>
+                                    <rich:toolbarGroup location="right" id="logout">
+                                        <h:commandButton image="/images/ICONS/logout1.png" action="#{sessionController.deconnexion()}" immediate="true" />
+                                    </rich:toolbarGroup>
+                                </rich:toolbar>
+                            </h:form>
+                        </ui:insert>                       
+
+                        <!--Carte-->
+                        <div id="map">
+
+                        </div>
+                        <script type="text/javascript">
+                            var distributorMarq = L.icon({
+                                iconUrl: './resources/leaflet-0.7.3/images/marker-distributor.png',
+                                shadowUrl: './resources/leaflet-0.7.3/images/marker-shadow.png',
+                                shadowAnchor: [1, 0],  // the same for the shadow
+                                popupAnchor:  [12, 8] // point from which the popup should open relative to the iconAnchor
+                            });
+                            var clientMarq = L.icon({
+                                iconUrl: './resources/leaflet-0.7.3/images/marker-client.png',
+                                shadowUrl: './resources/leaflet-0.7.3/images/marker-shadow.png',
+                                shadowAnchor: [1, 0],  // the same for the shadow
+                                popupAnchor:  [12, 8] // point from which the popup should open relative to the iconAnchor
+                            });
+                            var powerMarq = L.icon({
+                                iconUrl: './resources/leaflet-0.7.3/images/marker-powa.png',
+                                shadowUrl: './resources/leaflet-0.7.3/images/marker-shadow.png',
+                                shadowAnchor: [-20, -15],  // the same for the shadow
+                                popupAnchor:  [30, 20] // point from which the popup should open relative to the iconAnchor
+                            });
+                            var map = L.map('map').setView([5.596, 10.589], 9);
+                            var markerdistributor1 = L.marker([5.98221, 11.253321], {icon: distributorMarq}).addTo(map);
+                            markerdistributor1.bindPopup("Alexy.").openPopup();
+                            var markerupowa = L.marker([5.46698, 10.42191], {icon: powerMarq}).addTo(map);
+                            markerupowa.bindPopup("QG d'upOwa.").openPopup();
+                            var markermokbox0 = L.marker([5.82899459, 10.96012554], {icon: clientMarq}).addTo(map);
+                            markermokbox0.bindPopup("NoBox:0, User:Adamou.").openPopup();
+                            var markermokbox7 = L.marker([5.64003094, 10.89005636], {icon: clientMarq}).addTo(map);
+                            markermokbox7.bindPopup("NoBox:7, User:Chouaibou.").openPopup();
+                            var markermokbox8 = L.marker([5.65185185, 10.60743349], {icon: clientMarq}).addTo(map);
+                            markermokbox8.bindPopup("NoBox:8, User:Njie ndam.").openPopup();
+                            var markermokbox10 = L.marker([5.73036566, 10.90580994], {icon: clientMarq}).addTo(map);
+                            markermokbox10.bindPopup("NoBox:10, User:Lamine.").openPopup();
+                            var markermokbox11 = L.marker([5.6882262492, 10.8862670583], {icon: clientMarq}).addTo(map);
+                            markermokbox11.bindPopup("NoBox:11, User:Ibrahim.").openPopup();
+                            var markermokbox12 = L.marker([5.79402913, 11.06538423], {icon: clientMarq}).addTo(map);
+                            markermokbox12.bindPopup("NoBox:12, User:Mama Mefire.").openPopup();
+                        
+                            var popup = L.popup();
+
+                            function onMapClick(e) {
+                                popup
+                                .setLatLng(e.latlng)
+                                .setContent("Coordonnee " + e.latlng.toString())
+                                .openOn(map);
+                            }
+
+                            map.on('click', onMapClick);	
+	  
+                            L.tileLayer('http://{s}.tiles.mapbox.com/v3/phil6611.ikebkh58/{z}/{x}/{y}.png', {
+                                attribution: 'mOk Tracer &copy; <a href="http://www.upowa.org">upOwa</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                                maxZoom: 22,
+                                id: 'seanjackson.mmd1he25',
+                                accessToken: 'pk.eyJ1Ijoic2VhbmphY2tzb24iLCJhIjoiMjNmMWYxN2VhZjQwZGI3MTcxZTI3MzMwNmRkYWIwZjkifQ.PoJZkF8NodGJv13UoG5_Cg#16'
+                            }).addTo(map);
+
+                        </script>
+
+                    </ui:insert>
+                </div>
+            </div>
+            <div id="bottom" align="center">
+                <h:outputText style="font-size: 16pt; font-style: italic" value="&copy; Copyright upOwa 2015"/>   
+            </div>
+
+            <!-- formulaire de connexion !-->
+
+            <rich:popupPanel autosized="true" domElementAttachment="form" header="Authentification" show="#{!sessionController.conected}">
+                <h:form id="con">
+                    <h:panelGrid columns="3">
+                        <h:outputLabel style="font-size: 14pt; color: #ED8D14" value="Login:"/>
+                        <p:inputText id="Login" value="#{sessionController.login}" required="true" requiredMessage="champs obligatoire" placeholder="Votre login"/>
+                        <h:message for="Login"/>
+                        <h:outputLabel style="font-size: 14pt; color: #ED8D14" value="Pass:"/>
+                        <p:password id="mdp" value="#{sessionController.mdp}" required="true" requiredMessage="champs obligatoire" placeholder="Votre mot de passe"/>
+                        <h:message for="mdp"/>
+                    </h:panelGrid>  
+                    <h:panelGrid>
+                        <a4j:commandButton render="con" image="/images/ICONS/login3.png" action="#{sessionController.authentification()}" />   
+                    </h:panelGrid> 
+                </h:form>
+                <meta>
+                    <f:viewParam name="render" value="#{sessionController.showMessage}" />
+                    <f:viewParam name="notify" value="#{sessionController.message}" />
+                </meta>
+            </rich:popupPanel> 
+        </f:view>
+    </h:body>
+
+</html>

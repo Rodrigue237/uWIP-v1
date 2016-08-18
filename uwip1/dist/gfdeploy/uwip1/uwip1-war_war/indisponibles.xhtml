@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./home.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{sessionController.watcher()}"/>
+    </f:metadata>
+    <meta>
+        <f:viewParam name="render" value="#{boxController.showMessage}" />
+        <f:viewParam name="notify" value="#{boxController.message}" />
+    </meta>
+    <ui:define name="left">
+        Power people now
+        <h:form>
+            <p:menu toggleable="true">
+                <p:submenu label="Outils">
+                    <p:menuitem value="Distances"/>
+                    <p:menuitem value="Itinéraire"/>
+                </p:submenu>
+                <p:submenu label="Navigations">
+                    <p:menuitem value="upOwa" url="http://www.upowa.org"/>
+                    <p:menuitem value="Website Admin" url="http://www.upowa.org/wp-login.php"/>
+                </p:submenu>
+            </p:menu>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:view>
+            <rich:notify stayTime="2000" showCloseButton ="true" rendered="#{boxController.showMessage}">
+                <f:facet name="detail">
+                    <h:outputText value="#{boxController.message}"/>
+                </f:facet>
+            </rich:notify>
+            <h:form>
+                <h1><h:outputText value="Gestion des statuts de box"/></h1>
+                <p:dataTable value="#{boxController.listBoxIndispo}" var="item" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" rows="10" style="margin-bottom:20px">
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="No"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idboxe}"/>
+                    </p:column>
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="No.SERIE"/>
+                        </f:facet>
+                        <h:outputText value="MB#{item.refbox}H#{item.hardwareversion}S#{item.softwareversion}"/>
+                    </p:column>
+                    <p:column style="width: 90px">
+                        <f:facet name="header">
+                            <h:outputText value="HARDWARE v."/>
+                        </f:facet>
+                        <h:outputText value="#{item.hardwareversion}"/>
+                    </p:column>
+                    <p:column style="width: 80px">
+                        <f:facet name="header">
+                            <h:outputText value="SOFTWARE v."/>
+                        </f:facet>
+                        <h:outputText value="#{item.softwareversion}"/>
+                    </p:column>
+                    <p:column style="width: 80px">
+                        <f:facet name="header">
+                            <h:outputText value="CLIENT"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idclient.firstname} #{item.idclient.lastname}"/>
+                    </p:column>
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="KPI1"/>
+                        </f:facet>
+                        <h:outputText value="#{item.kpi1}"/>
+                    </p:column>
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="KPI2"/>
+                        </f:facet>
+                        <h:outputText value="#{item.kpi2}"/>
+                    </p:column>
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="KPI3"/>
+                        </f:facet>
+                        <h:outputText value="#{item.kpi3}"/>
+                    </p:column>
+
+                    <p:column style="width: 60px">
+                        <f:facet name="header">
+                            <h:outputText value="DERNIERE"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastmaintenance}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="width: 40px">
+                        <f:facet name="header">
+                            <h:outputText value="TRACE"/>
+                        </f:facet>
+                        <h:graphicImage value="/images/ICONS/#{item.atelier}" styleClass="pic" alt="traceatelier" />
+                    </p:column>
+
+                    <p:column style="width: 200px">
+                        <f:facet name="header">
+                            <h:outputText value="OPERATIONS"/>
+                        </f:facet>
+                        <a4j:commandButton oncomplete="#{rich:component('m_box')}.show()" actionListener="#{boxController.prepareEdit()}" render="m_box,f_m_box" value="Déplacer" style="width: 100px">
+                            <f:setPropertyActionListener value="#{item}" target="#{boxController.box}"/>
+                        </a4j:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+                <hr/>
+                <!--Creations du boutton ajouter. !-->
+                <h:commandButton immediate="true"  value="Fermer" style="color:red;" action="home.xhtml?face-redirect=true" />
+                <h:commandButton immediate="true"  value="Imprimer" style="color:green;" action="#" />
+
+                <!--Formulaire de mise a jour Atelier-->
+                <rich:popupPanel show="false" id="m_box" domElementAttachment="form" autosized="true" height="100" width="300" header="DEPLACEMENT">
+                    <h:form id="f_m_box">
+                        <h:panelGrid columns="3" id="c_data">
+                            <h:outputLabel value="Destination finale:" for="atelier" />
+                            <h:selectOneMenu id="atelier" value="#{boxController.box.atelier}" title="Atelier" >
+                                <f:selectItem itemValue="A1.png" itemLabel="Magazin OK" />
+                                <f:selectItem itemValue="A2.png" itemLabel="Magazin HS" />
+                                <f:selectItem itemValue="A3.png" itemLabel="Atelier Réparation" />
+                                <f:selectItem itemValue="A4.png" itemLabel="Atelier Test" />
+                            </h:selectOneMenu>
+                            <rich:message for="atelier"/>     
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:commandButton type="button" value="Annuler" style="color:red;" onclick="#{rich:component('m_box')}.hide()"/>
+                            <a4j:commandButton value="Déplacer" action="#{boxController.editBox3()}" render="c_data" />
+                        </h:panelGrid>
+                    </h:form>
+                </rich:popupPanel>
+            </h:form>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>
